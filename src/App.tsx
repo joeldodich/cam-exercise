@@ -1,44 +1,37 @@
 import { Model } from "@/components/model/model";
 import { useState } from "react";
 import "./App.css";
-import reactLogo from "./assets/react.svg";
-import { Button } from "./components/ui/button";
-import viteLogo from "/vite.svg";
+import { ToggleGroup, ToggleGroupItem } from "./components/ui/toggle-group";
+
+export enum Colorization {
+    NONE = "none",
+    ENTITY = "entity",
+    POCKET = "pocket",
+}
 
 function App() {
-    const [count, setCount] = useState(0);
+    const [colorization, setColorization] = useState<Colorization>(
+        Colorization.NONE
+    );
 
     return (
         <>
-            <div>
-                <a href="https://vitejs.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img
-                        src={reactLogo}
-                        className="logo react"
-                        alt="React logo"
-                    />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <Button
-                    variant="default"
-                    size="lg"
-                    onClick={() => setCount((count) => count + 1)}
-                >
-                    Count is {count}
-                </Button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
-            <Model />
+            <ToggleGroup
+                type="single"
+                value={colorization}
+                onValueChange={(data: Colorization) => setColorization(data)}
+            >
+                <ToggleGroupItem value={Colorization.NONE}>
+                    None
+                </ToggleGroupItem>
+                <ToggleGroupItem value={Colorization.ENTITY}>
+                    Entity
+                </ToggleGroupItem>
+                <ToggleGroupItem value={Colorization.POCKET}>
+                    Pocket
+                </ToggleGroupItem>
+            </ToggleGroup>
+            <Model colorization={colorization} />
         </>
     );
 }
