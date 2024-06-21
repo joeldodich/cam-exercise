@@ -154,9 +154,9 @@ export const Model = ({ colorization }: ModelProps) => {
     }, [colorization]);
 
     return (
-        <div className="container mx-auto bg-primary h-full w-full">
+        <div className="bg-primary h-full w-full min-w-full">
             <Canvas
-                className="fill-container"
+                className="h-full w-full"
                 camera={{ position: [0, 0, 300] }}
             >
                 <ambientLight />

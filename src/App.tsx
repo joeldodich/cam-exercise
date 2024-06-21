@@ -1,6 +1,5 @@
 import { Model } from "@/components/model/model";
 import { useState } from "react";
-import "./App.css";
 import { ToggleGroup, ToggleGroupItem } from "./components/ui/toggle-group";
 
 export enum Colorization {
