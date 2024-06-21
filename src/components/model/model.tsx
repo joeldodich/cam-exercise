@@ -1,21 +1,33 @@
+import { EntityGeometryInfo } from "@/types/global";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import * as React from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three-stdlib";
+// import rawEdgeMetadata from "./adjacency_graph_edge_metadata.json";
+import rawAdjacencyGraph from "./adjacency_graph.json";
 import "./model.css";
 import rgbToId from "./rgb_id_to_entity_id_map.json";
 
+type rgbString = string; // "Format of rgb(R, G, B)"
 interface ModelEntity {
     bufferGeometry: THREE.BufferGeometry;
-    color: string;
+    color: rgbString;
 }
 
-const colorToIdMap = rgbToId as Record<string, string>;
-let idToColorMap = {} as Record<string, string>;
+let adjacencyGraph: Record<
+    string,
+    EntityGeometryInfo["entityId"][]
+> = rawAdjacencyGraph
+
+const colorToEntityIdMap = rgbToId as Record<
+    string,
+    EntityGeometryInfo["entityId"]
+>;
+let idToColorMap = {} as Record<EntityGeometryInfo["entityId"], rgbString>;
 Object.keys(rgbToId).forEach((entry) => {
     const [r, g, b] = entry.split("-").map(Number);
-    idToColorMap[colorToIdMap[entry]] = `rgb(${r}, ${g}, ${b})`;
+    idToColorMap[colorToEntityIdMap[entry]] = `rgb(${r}, ${g}, ${b})`;
 });
 
 const defaultColor = "rgb(120, 120, 120)";
