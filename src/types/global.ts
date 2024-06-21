@@ -21,7 +21,7 @@ export type EdgeCurve = {
     midPoint: number[];
     endPoint: number[];
     startPointNormal: number[];
-}
+};
 
 export enum EntityType {
     ENTITY_TYPE_PLANE,
@@ -40,3 +40,16 @@ export enum GraphEdgeType {
     CONVEX,
     TANGENTIAL,
 }
+
+export type EntityIdPair =
+    `${EntityGeometryInfo["entityId"]}-${EntityGeometryInfo["entityId"]}`;
+
+export type EdgeRelationshipArray =
+    | [GraphEdgeType.CONCAVE]
+    | [GraphEdgeType.CONVEX]
+    | [GraphEdgeType.TANGENTIAL, GraphEdgeType.CONCAVE | GraphEdgeType.CONVEX];
+
+export type PocketGroupType = {
+    pocketGroupId: string;
+    pocketEntities: Set<EntityGeometryInfo["entityId"]>;
+};
