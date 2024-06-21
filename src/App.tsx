@@ -14,7 +14,7 @@ function App() {
     );
 
     return (
-        <>
+        <div className="max-w-full max-h-full h-full w-full">
             <ToggleGroup
                 type="single"
                 value={colorization}
@@ -31,7 +31,7 @@ function App() {
                 </ToggleGroupItem>
             </ToggleGroup>
             <Model colorization={colorization} />
-        </>
+        </div>
     );
 }
 

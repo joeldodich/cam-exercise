@@ -6,7 +6,7 @@ import {
 	GraphEdgeType,
 	PocketGroupType,
 } from "@/types/global";
-import { OrbitControls, useCubeTexture } from "@react-three/drei";
+import { OrbitControls, OrthographicCamera, useCubeTexture } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import * as React from "react";
 import * as THREE from "three";
@@ -157,23 +157,16 @@ export const Model = ({ colorization }: ModelProps) => {
         <div className="bg-primary h-full w-full min-w-full">
             <Canvas
                 className="h-full w-full"
-                camera={{ position: [0, 0, 300] }}
+                // camera={{ position: [0, 0, 300] }}
             >
                 <ambientLight />
                 <pointLight intensity={1} position={[500, 500, 1000]} />
                 <OrbitControls makeDefault />
-                {/* <OrthographicCamera
+                <OrthographicCamera
                     makeDefault
-
-                    zoom={1}
-                    top={2000}
-                    bottom={-2000}
-                    left={2000}
-                    right={-2000}
                     near={1}
-                    far={20000}
-                    position={[0, 0, 2000]}
-                /> */}
+                    position={[0, 0, 300]}
+                />
                 <group>
                     {modelEnts.map((ent, index) => (
                         <mesh geometry={ent.bufferGeometry} key={index}>
