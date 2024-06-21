@@ -6,7 +6,7 @@ import {
 	GraphEdgeType,
 	PocketGroupType,
 } from "@/types/global";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, useCubeTexture } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import * as React from "react";
 import * as THREE from "three";
@@ -128,8 +128,13 @@ export const Model = ({ colorization }: ModelProps) => {
     const [modelEnts, setModelEnts] = React.useState<ModelEntity[]>([]);
     const colorMap = applyColorization(colorization);
 
+    const texture = useCubeTexture(
+        ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"],
+        { path: "../public/cubeMap/" }
+    );
+
     React.useMemo(() => {
-		console.log("Loading model...");
+        console.log("Loading model...");
         new GLTFLoader().load("./colored_glb.glb", (gltf) => {
             const newModuleEntities: ModelEntity[] = [];
             gltf.scene.traverse((element) => {
@@ -149,14 +154,36 @@ export const Model = ({ colorization }: ModelProps) => {
     }, [colorization]);
 
     return (
-        <div className="canvas-container">
-            <Canvas camera={{ position: [0, 0, 300] }}>
+        <div className="container mx-auto bg-primary h-full w-full">
+            <Canvas
+                className="fill-container"
+                camera={{ position: [0, 0, 300] }}
+            >
                 <ambientLight />
+                <pointLight intensity={1} position={[500, 500, 1000]} />
                 <OrbitControls makeDefault />
+                {/* <OrthographicCamera
+                    makeDefault
+
+                    zoom={1}
+                    top={2000}
+                    bottom={-2000}
+                    left={2000}
+                    right={-2000}
+                    near={1}
+                    far={20000}
+                    position={[0, 0, 2000]}
+                /> */}
                 <group>
                     {modelEnts.map((ent, index) => (
                         <mesh geometry={ent.bufferGeometry} key={index}>
-                            <meshStandardMaterial color={ent.color} />
+                            <meshPhysicalMaterial
+                                envMap={texture}
+                                reflectivity={0.01}
+                                roughness={0.18}
+                                metalness={0.05}
+                                color={ent.color}
+                            />
                         </mesh>
                     ))}
                 </group>
