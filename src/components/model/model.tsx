@@ -46,7 +46,7 @@ function dfs(
     visited: Set<EntityGeometryInfo["entityId"]>
 ) {
     visited.add(entityIdKey);
-    currentGroup.pocketEntities.add(entityIdKey);
+    currentGroup.entityIds.add(entityIdKey);
 
     adjacencyGraph[entityIdKey]?.forEach((connectedEntityId) => {
         const entityIdPair: EntityIdPair = `${entityIdKey}-${connectedEntityId}`;
@@ -69,10 +69,10 @@ Object.keys(adjacencyGraph).forEach((entityId) => {
     if (!visited.has(entityId)) {
         const currentGroup: PocketGroup = {
             id: groupId.toString(),
-            pocketEntities: new Set<string>(),
+            entityIds: new Set<string>(),
         };
         dfs(entityId, currentGroup, visited);
-        if (currentGroup.pocketEntities.size > 1) {
+        if (currentGroup.entityIds.size > 1) {
             pocketGroups.push(currentGroup);
             groupId++;
         }
@@ -115,7 +115,7 @@ const applyColorization = (colorizationSelection: Colorization) => {
                 )}, ${Math.floor(Math.random() * 256)}, ${Math.floor(
                     Math.random() * 256
                 )})`;
-                group.pocketEntities.forEach((entityId) => {
+                group.entityIds.forEach((entityId) => {
                     colorMap[entityId] = randomColor;
                 });
             });

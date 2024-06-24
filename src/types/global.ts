@@ -51,5 +51,5 @@ export type EdgeRelationshipArray =
 
 export type PocketGroup = {
     id: string;
-    pocketEntities: Set<EntityGeometryInfo["entityId"]>;
+    entityIds: Set<EntityGeometryInfo["entityId"]>;
 };
