@@ -8,7 +8,7 @@ export const Viewer = () => {
         useViewer();
 
     return (
-        <div className="bg-primary h-full w-full min-w-full bg-white">
+        <div className="h-full w-full min-w-full">
             <ToggleGroup
                 type="single"
                 value={colorization}

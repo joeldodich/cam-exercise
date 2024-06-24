@@ -13,6 +13,7 @@ import { GLTFLoader } from "three-stdlib";
 import { createContext, useContext } from "react";
 import rawAdjacencyGraph from "./adjacency_graph.json";
 import rawEdgeMetadata from "./adjacency_graph_edge_metadata.json";
+import demoFile from "./colored_glb.glb?url";
 import rgbToId from "./rgb_id_to_entity_id_map.json";
 
 type RgbString = string;
@@ -153,8 +154,8 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
         { path: "/cubeMap/" }
     );
 
-    const updateModelEntities = () => {
-        new GLTFLoader().load("./colored_glb.glb", (gltf) => {
+    React.useMemo(() => {
+        new GLTFLoader().load(demoFile, (gltf) => {
             const newModuleEntities: ModelEntity[] = [];
             gltf.scene.traverse((element) => {
                 if (element.type !== "Mesh") return;
@@ -170,10 +171,6 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
             });
             setModelEntities(newModuleEntities);
         });
-    };
-
-    React.useMemo(() => {
-        updateModelEntities();
     }, [colorization]);
 
     return (
