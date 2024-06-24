@@ -50,6 +50,6 @@ export type EdgeRelationshipArray =
     | [GraphEdgeType.TANGENTIAL, GraphEdgeType.CONCAVE | GraphEdgeType.CONVEX];
 
 export type PocketGroup = {
-    pocketGroupId: string;
+    id: string;
     pocketEntities: Set<EntityGeometryInfo["entityId"]>;
 };

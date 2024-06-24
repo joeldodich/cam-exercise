@@ -68,7 +68,7 @@ let groupId = 0;
 Object.keys(adjacencyGraph).forEach((entityId) => {
     if (!visited.has(entityId)) {
         const currentGroup: PocketGroup = {
-            pocketGroupId: groupId.toString(),
+            id: groupId.toString(),
             pocketEntities: new Set<string>(),
         };
         dfs(entityId, currentGroup, visited);
