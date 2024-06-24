@@ -3,9 +3,16 @@ import {
     useViewer,
 } from "@/context/ViewerProvider/viewer-provider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
+import { EntityGeometryInfo } from "@/types/global";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import { useState } from "react";
+import { styled } from "styled-components";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+//create a styled components li that takes in an active prop. When active, make the background color light blue
+const ListItem = styled.li<{ active?: boolean }>`
+    background-color: ${(props) => (props.active ? "lightblue" : "white")};
+`;
 
 export const Viewer = () => {
     const {
@@ -15,6 +22,10 @@ export const Viewer = () => {
         setColorization,
         pocketGroups,
     } = useViewer();
+
+    const [hoveredEntityId, setHoveredEntityId] = useState<
+        EntityGeometryInfo["entityId"] | null
+    >(null);
 
     const ColorToggle = (
         <ToggleGroup
@@ -35,10 +46,21 @@ export const Viewer = () => {
     const PocketList = (
         <>
             {pocketGroups.map((pocket) => {
+                const isActive =
+                    hoveredEntityId !== null &&
+                    pocket.entityIds.has(hoveredEntityId);
                 return (
-                    <li key={pocket.id}>
-                        Group {pocket.id}
-                    </li>
+                    <ListItem key={pocket.id} active={isActive}>
+                        <strong>Group {pocket.id}</strong>
+                        <p>
+                            {pocket.boundingBox &&
+                                `X: ${pocket.boundingBox.min.x.toFixed(
+                                    2
+                                )} Y: ${pocket.boundingBox.min.y.toFixed(
+                                    2
+                                )} Z: ${pocket.boundingBox.min.z.toFixed(2)}`}
+                        </p>
+                    </ListItem>
                 );
             })}
         </>
@@ -67,9 +89,7 @@ export const Viewer = () => {
                             <mesh
                                 geometry={ent.bufferGeometry}
                                 key={index}
-                                onPointerOver={() =>
-                                    console.log(ent.bufferGeometry.id)
-                                }
+                                onPointerOver={() => setHoveredEntityId(ent.id)}
                             >
                                 <meshPhysicalMaterial
                                     envMap={texture}

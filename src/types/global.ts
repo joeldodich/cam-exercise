@@ -1,3 +1,5 @@
+import { Box3 } from "three";
+
 export interface EntityGeometryInfo {
     entityType: EntityType;
     entityId: string;
@@ -52,4 +54,5 @@ export type EdgeRelationshipArray =
 export type PocketGroup = {
     id: string;
     entityIds: Set<EntityGeometryInfo["entityId"]>;
+    boundingBox?: Box3;
 };
