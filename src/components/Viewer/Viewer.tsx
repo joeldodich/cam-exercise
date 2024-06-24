@@ -32,18 +32,20 @@ export const Viewer = () => {
         </ToggleGroup>
     );
 
-    // const groupsList = pocketGroups.map((group) => {
-    //     return (
-    //         <div key={group.id}>
-    //             {group.pocketEntities.map((entity) => (
-    //                 <div key={entity}>{entity}</div>
-    //             ))}
-    //         </div>
-    //     );
-    // }
+    const PocketList = (
+        <>
+            {pocketGroups.map((pocket) => {
+                return (
+                    <li key={pocket.id}>
+                        Group {pocket.id}
+                    </li>
+                );
+            })}
+        </>
+    );
 
     return (
-        <WorkingLayout headerSlot={ColorToggle} panelSlot={<div>testing</div>}>
+        <WorkingLayout headerSlot={ColorToggle} panelSlot={PocketList}>
             {!modelEntities && <div>Loading...</div>}
             {modelEntities && (
                 <Canvas>
