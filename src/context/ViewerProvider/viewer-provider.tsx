@@ -3,21 +3,23 @@ import {
     EntityGeometryInfo,
     EntityIdPair,
     GraphEdgeType,
-    PocketGroupType,
+    PocketGroup,
 } from "@/types/global";
 import { useCubeTexture } from "@react-three/drei";
 import * as React from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three-stdlib";
 
-import { createContext, useContext } from "react";
+import { createContext, useContext, useMemo } from "react";
 import rawAdjacencyGraph from "./adjacency_graph.json";
 import rawEdgeMetadata from "./adjacency_graph_edge_metadata.json";
 import demoFile from "./colored_glb.glb?url";
+import entityGeometryInfo from "./entity_geometry_info.json";
 import rgbToId from "./rgb_id_to_entity_id_map.json";
 
 type RgbString = string;
 interface ModelEntity {
+    id: EntityGeometryInfo["entityId"];
     bufferGeometry: THREE.BufferGeometry;
     color: RgbString;
 }
@@ -38,10 +40,9 @@ function isConcaveOrTangentConcave(
     );
 }
 
-// DFS function to populate PocketGroupType
 function dfs(
     entityIdKey: EntityGeometryInfo["entityId"],
-    currentGroup: PocketGroupType,
+    currentGroup: PocketGroup,
     visited: Set<EntityGeometryInfo["entityId"]>
 ) {
     visited.add(entityIdKey);
@@ -60,13 +61,13 @@ function dfs(
     });
 }
 
-const pocketGroups: PocketGroupType[] = [];
+const pocketGroups: PocketGroup[] = [];
 const visited = new Set<string>();
 let groupId = 0;
 
 Object.keys(adjacencyGraph).forEach((entityId) => {
     if (!visited.has(entityId)) {
-        const currentGroup: PocketGroupType = {
+        const currentGroup: PocketGroup = {
             pocketGroupId: groupId.toString(),
             pocketEntities: new Set<string>(),
         };
@@ -95,7 +96,6 @@ Object.keys(rgbToId).forEach((entry) => {
 });
 
 const defaultColor = "rgb(120, 120, 120)";
-
 const applyColorization = (colorizationSelection: Colorization) => {
     let colorMap = {} as Record<EntityGeometryInfo["entityId"], RgbString>;
     switch (colorizationSelection) {
@@ -124,11 +124,15 @@ const applyColorization = (colorizationSelection: Colorization) => {
     }
 };
 
+const entityGeometryGraph = entityGeometryInfo as EntityGeometryInfo[];
+
 type ViewerContextType = {
     colorization: Colorization;
     texture: THREE.CubeTexture;
     setColorization: (colorization: Colorization) => void;
     modelEntities: ModelEntity[] | null;
+    pocketGroups: PocketGroup[];
+    geometryGraph: EntityGeometryInfo[];
 };
 
 const ViewerContext = createContext<ViewerContextType>({
@@ -136,6 +140,8 @@ const ViewerContext = createContext<ViewerContextType>({
     texture: new THREE.CubeTexture(),
     setColorization: () => {},
     modelEntities: null,
+    geometryGraph: [], // Abstract
+    pocketGroups: [], // Abstract
 });
 
 export const useViewer = () => useContext(ViewerContext);
@@ -154,7 +160,7 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
         { path: "/cubeMap/" }
     );
 
-    React.useMemo(() => {
+    useMemo(() => {
         new GLTFLoader().load(demoFile, (gltf) => {
             const newModuleEntities: ModelEntity[] = [];
             gltf.scene.traverse((element) => {
@@ -164,6 +170,7 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
                 const elementFixedId = meshElement.name.split("Product_1_")[1];
 
                 newModuleEntities.push({
+                    id: elementFixedId,
                     bufferGeometry:
                         meshElement.geometry as THREE.BufferGeometry,
                     color: colorMap[elementFixedId] || defaultColor,
@@ -175,7 +182,14 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <ViewerContext.Provider
-            value={{ colorization, setColorization, texture, modelEntities }}
+            value={{
+                colorization,
+                setColorization,
+                texture,
+                modelEntities,
+                pocketGroups,
+                geometryGraph: entityGeometryGraph,
+            }}
         >
             {children}
         </ViewerContext.Provider>

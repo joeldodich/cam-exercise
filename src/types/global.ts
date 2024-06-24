@@ -1,8 +1,3 @@
-export interface EdgeCurveChain {
-    edgeType: EdgeType;
-    edgeCurves: EdgeCurve[];
-}
-
 export interface EntityGeometryInfo {
     entityType: EntityType;
     entityId: string;
@@ -14,6 +9,11 @@ export interface EntityGeometryInfo {
     minPosRadius: number;
     minNegRadius: number;
     edgeCurveChains: EdgeCurveChain[];
+}
+
+export interface EdgeCurveChain {
+    edgeType: EdgeType;
+    edgeCurves: EdgeCurve[];
 }
 
 export type EdgeCurve = {
@@ -49,7 +49,7 @@ export type EdgeRelationshipArray =
     | [GraphEdgeType.CONVEX]
     | [GraphEdgeType.TANGENTIAL, GraphEdgeType.CONCAVE | GraphEdgeType.CONVEX];
 
-export type PocketGroupType = {
+export type PocketGroup = {
     pocketGroupId: string;
     pocketEntities: Set<EntityGeometryInfo["entityId"]>;
 };

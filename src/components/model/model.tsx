@@ -4,7 +4,7 @@ import {
     EntityGeometryInfo,
     EntityIdPair,
     GraphEdgeType,
-    PocketGroupType,
+    PocketGroup,
 } from "@/types/global";
 import { OrbitControls, OrthographicCamera, useCubeTexture } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
@@ -42,7 +42,7 @@ function isConcaveOrTangentConcave(
 // DFS function to populate PocketGroupType
 function dfs(
     entityIdKey: EntityGeometryInfo["entityId"],
-    currentGroup: PocketGroupType,
+    currentGroup: PocketGroup,
     visited: Set<EntityGeometryInfo["entityId"]>
 ) {
     visited.add(entityIdKey);
@@ -61,13 +61,13 @@ function dfs(
     });
 }
 
-const pocketGroups: PocketGroupType[] = [];
+const pocketGroups: PocketGroup[] = [];
 const visited = new Set<string>();
 let groupId = 0;
 
 Object.keys(adjacencyGraph).forEach((entityId) => {
     if (!visited.has(entityId)) {
-        const currentGroup: PocketGroupType = {
+        const currentGroup: PocketGroup = {
             pocketGroupId: groupId.toString(),
             pocketEntities: new Set<string>(),
         };

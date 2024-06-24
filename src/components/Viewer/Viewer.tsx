@@ -1,35 +1,60 @@
-import { Colorization, useViewer } from "@/context/ViewerProvider/viewer-provider";
+import {
+    Colorization,
+    useViewer,
+} from "@/context/ViewerProvider/viewer-provider";
+import { WorkingLayout } from "@/layouts/WorkingLayout";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 export const Viewer = () => {
-    const { modelEntities, texture, colorization, setColorization } =
-        useViewer();
+    const {
+        modelEntities,
+        texture,
+        colorization,
+        setColorization,
+        pocketGroups,
+    } = useViewer();
+
+    const ColorToggle = (
+        <ToggleGroup
+            type="single"
+            value={colorization}
+            onValueChange={(data: Colorization) => setColorization(data)}
+        >
+            <ToggleGroupItem value={Colorization.NONE}>None</ToggleGroupItem>
+            <ToggleGroupItem value={Colorization.ENTITY}>
+                Entity
+            </ToggleGroupItem>
+            <ToggleGroupItem value={Colorization.POCKET}>
+                Pocket
+            </ToggleGroupItem>
+        </ToggleGroup>
+    );
+
+    // const groupsList = pocketGroups.map((group) => {
+    //     return (
+    //         <div key={group.id}>
+    //             {group.pocketEntities.map((entity) => (
+    //                 <div key={entity}>{entity}</div>
+    //             ))}
+    //         </div>
+    //     );
+    // }
 
     return (
-        <div className="h-full w-full min-w-full">
-            <ToggleGroup
-                type="single"
-                value={colorization}
-                onValueChange={(data: Colorization) => setColorization(data)}
-            >
-                <ToggleGroupItem value={Colorization.NONE}>
-                    None
-                </ToggleGroupItem>
-                <ToggleGroupItem value={Colorization.ENTITY}>
-                    Entity
-                </ToggleGroupItem>
-                <ToggleGroupItem value={Colorization.POCKET}>
-                    Pocket
-                </ToggleGroupItem>
-            </ToggleGroup>
-            {!modelEntities && <div className="h-full w-full">Loading...</div>}
+        <WorkingLayout headerSlot={ColorToggle} panelSlot={<div>testing</div>}>
+            {!modelEntities && <div>Loading...</div>}
             {modelEntities && (
-                <Canvas className="h-full w-full">
+                <Canvas>
                     <ambientLight />
                     <pointLight intensity={1} position={[500, 500, 1000]} />
-                    <OrbitControls makeDefault />
+                    <OrbitControls
+                        makeDefault
+                        // panSpeed={1}
+                        dampingFactor={0.8}
+                        domElement={document.body}
+                    />
                     <OrthographicCamera
                         makeDefault
                         near={1}
@@ -56,6 +81,6 @@ export const Viewer = () => {
                     </group>
                 </Canvas>
             )}
-        </div>
+        </WorkingLayout>
     );
 };
