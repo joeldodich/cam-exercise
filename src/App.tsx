@@ -1,38 +1,13 @@
-import { Model } from "@/components/model/model";
-import { useState } from "react";
-import { ToggleGroup, ToggleGroupItem } from "./components/ui/toggle-group";
-
-export enum Colorization {
-    NONE = "none",
-    ENTITY = "entity",
-    POCKET = "pocket",
-}
+import { useMemo } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { routes } from "./routes";
 
 function App() {
-    const [colorization, setColorization] = useState<Colorization>(
-        Colorization.NONE
-    );
+    const router = useMemo(() => {
+        return createBrowserRouter(routes);
+    }, []);
 
-    return (
-        <div className="max-w-full max-h-full h-full w-full">
-            <ToggleGroup
-                type="single"
-                value={colorization}
-                onValueChange={(data: Colorization) => setColorization(data)}
-            >
-                <ToggleGroupItem value={Colorization.NONE}>
-                    None
-                </ToggleGroupItem>
-                <ToggleGroupItem value={Colorization.ENTITY}>
-                    Entity
-                </ToggleGroupItem>
-                <ToggleGroupItem value={Colorization.POCKET}>
-                    Pocket
-                </ToggleGroupItem>
-            </ToggleGroup>
-            <Model colorization={colorization} />
-        </div>
-    );
+    return <RouterProvider router={router} />;
 }
 
 export default App;
