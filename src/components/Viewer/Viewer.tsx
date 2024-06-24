@@ -9,9 +9,9 @@ import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
 import { styled } from "styled-components";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-//create a styled components li that takes in an active prop. When active, make the background color light blue
+
 const ListItem = styled.li<{ active?: boolean }>`
-    background-color: ${(props) => (props.active ? "lightblue" : "white")};
+    background-color: ${(props) => (props.active ? "lightblue" : "none")};
 `;
 
 export const Viewer = () => {
@@ -90,6 +90,7 @@ export const Viewer = () => {
                                 geometry={ent.bufferGeometry}
                                 key={index}
                                 onPointerOver={() => setHoveredEntityId(ent.id)}
+                                onPointerLeave={() => setHoveredEntityId(null)}
                             >
                                 <meshPhysicalMaterial
                                     envMap={texture}
