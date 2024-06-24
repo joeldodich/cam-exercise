@@ -1,19 +1,20 @@
 import { Colorization } from "@/App";
 import {
-	EdgeRelationshipArray,
-	EntityGeometryInfo,
-	EntityIdPair,
-	GraphEdgeType,
-	PocketGroupType,
+    EdgeRelationshipArray,
+    EntityGeometryInfo,
+    EntityIdPair,
+    GraphEdgeType,
+    PocketGroupType,
 } from "@/types/global";
 import { OrbitControls, OrthographicCamera, useCubeTexture } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import * as React from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three-stdlib";
+
+
 import rawAdjacencyGraph from "./adjacency_graph.json";
 import rawEdgeMetadata from "./adjacency_graph_edge_metadata.json";
-import "./model.css";
 import rgbToId from "./rgb_id_to_entity_id_map.json";
 
 type RgbString = string; // "Format of rgb(R, G, B)"
@@ -130,7 +131,7 @@ export const Model = ({ colorization }: ModelProps) => {
 
     const texture = useCubeTexture(
         ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"],
-        { path: "../public/cubeMap/" }
+        { path: "/cubeMap/" }
     );
 
     React.useMemo(() => {
@@ -154,10 +155,9 @@ export const Model = ({ colorization }: ModelProps) => {
     }, [colorization]);
 
     return (
-        <div className="bg-primary h-full w-full min-w-full">
+        <div className="bg-primary h-full w-full min-w-full bg-white">
             <Canvas
                 className="h-full w-full"
-                // camera={{ position: [0, 0, 300] }}
             >
                 <ambientLight />
                 <pointLight intensity={1} position={[500, 500, 1000]} />
@@ -169,7 +169,7 @@ export const Model = ({ colorization }: ModelProps) => {
                 />
                 <group>
                     {modelEnts.map((ent, index) => (
-                        <mesh geometry={ent.bufferGeometry} key={index}>
+                        <mesh geometry={ent.bufferGeometry} key={index} onPointerOver={()=>console.log(ent.bufferGeometry.id)}>
                             <meshPhysicalMaterial
                                 envMap={texture}
                                 reflectivity={0.01}
