@@ -63,7 +63,7 @@ export interface ModelEntity {
     bufferGeometry: BufferGeometry;
     color: RgbString;
     featureId?: string;
-    details: EntityGeometryInfo | undefined;
+    details?: EntityGeometryInfo;
 }
 
 export enum Colorization {

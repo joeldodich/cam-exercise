@@ -4,6 +4,7 @@ import {
 	EntityType,
 	ModelEntity,
 	PocketGroup,
+	RgbString,
 } from "@/types/global";
 import * as React from "react";
 import { createContext, useContext, useState } from "react";
@@ -64,8 +65,11 @@ rawEntityGeometryInfo.forEach((entity) => {
 type ViewerContextType = {
     colorization: Colorization;
     setColorization: (colorization: Colorization) => void;
-    modelEntities: ModelEntity[] | null;
-    setModelEntities: (modelEntities: ModelEntity[]) => void;
+    defaultColor: RgbString;
+    entityMap: Map<EntityGeometryInfo["entityId"], ModelEntity> | null;
+    setEntityMap: (
+        modelEntities: Map<EntityGeometryInfo["entityId"], ModelEntity>
+    ) => void;
     geometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> | null;
     pocketGroups: PocketGroup[] | null;
     cameraPosition?: THREE.Vector3;
@@ -75,8 +79,9 @@ type ViewerContextType = {
 const ViewerContext = createContext<ViewerContextType>({
     colorization: Colorization.NONE,
     setColorization: () => {},
-    modelEntities: null,
-    setModelEntities: () => {},
+    defaultColor: "rgb(120, 120, 120)",
+    entityMap: null,
+    setEntityMap: () => {},
     geometryMap: null, // Abstract
     pocketGroups: null, // Abstract
     cameraPosition: new THREE.Vector3(0, 0, 300),
@@ -86,13 +91,16 @@ const ViewerContext = createContext<ViewerContextType>({
 export const useViewer = () => useContext(ViewerContext);
 
 export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
-    const [modelEntities, setModelEntities] = useState<ModelEntity[] | null>(
-        null
-    );
+    const [entityMap, setEntityMap] = useState<Map<
+        EntityGeometryInfo["entityId"],
+        ModelEntity
+    > | null>(null);
     const [colorization, setColorization] = useState<Colorization>(
         Colorization.NONE
     );
-    const [cameraPosition, setCameraPosition] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, 300));
+    const [cameraPosition, setCameraPosition] = useState<THREE.Vector3>(
+        new THREE.Vector3(0, 0, 300)
+    );
     const pocketGroups = pocketGroupsResponse;
     const geometryMap = entityGeometryMapResponse;
 
@@ -101,8 +109,9 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
             value={{
                 colorization,
                 setColorization,
-                modelEntities,
-                setModelEntities,
+                defaultColor: "rgb(120, 120, 120)",
+                entityMap,
+                setEntityMap,
                 pocketGroups,
                 geometryMap,
                 cameraPosition,

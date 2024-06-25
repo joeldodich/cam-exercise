@@ -11,13 +11,8 @@ interface ModelProps {
 }
 
 export const Model = ({ setHoveredEntityId }: ModelProps) => {
-    const {
-        modelEntities,
-        setModelEntities,
-        geometryMap,
-        colorization,
-        defaultColor,
-    } = useViewer();
+    const { entityMap, setEntityMap, geometryMap, colorization, defaultColor } =
+        useViewer();
 
     const texture = useCubeTexture(
         ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"],
@@ -39,18 +34,18 @@ export const Model = ({ setHoveredEntityId }: ModelProps) => {
                     details: geometryMap.get(elementFixedId),
                 });
             });
-            setModelEntities(newModuleEntities);
+            setEntityMap(newModuleEntities);
         });
 
         return () => {
             newModuleEntities.clear();
         };
-    }, [colorization, modelEntities]);
+    }, [colorization, entityMap]);
 
-    if (!modelEntities) return null;
+    if (!entityMap) return null;
     return (
         <group>
-            {Array.from(modelEntities.values()).map((entity) => (
+            {Array.from(entityMap.values()).map((entity) => (
                 <mesh
                     key={entity.id}
                     geometry={entity.bufferGeometry}

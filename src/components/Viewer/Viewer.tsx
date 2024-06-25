@@ -15,7 +15,7 @@ const ListItem = styled.li<{ isHovered: boolean }>`
 
 export const Viewer = () => {
     const {
-        modelEntities,
+        entityMap,
         colorization,
         setColorization,
         pocketGroups,
@@ -44,18 +44,16 @@ export const Viewer = () => {
     );
 
     const handlePocketClick = (pocketId: string) => {
-        //get the first entity in the pocket group
         const entityId = pocketGroups
             ?.find((pocket) => pocket.id === pocketId)
             ?.entityIds.values()
             .next().value as ModelEntity["id"];
-        const entity = modelEntities?.find((entity) => entity.id === entityId);
+        const entity = entityMap?.get(entityId);
         const position = entity?.details?.centerNormal;
         // debugger;
         if (position) {
             console.log("Setting position...", position);
-            //the position value is a unit vector. Scale it by 300 to get a reasonable camera position
-            position.multiplyScalar(300);
+            position.setLength(300);
             setCameraPosition(new Vector3(...position));
         }
     };
@@ -69,7 +67,7 @@ export const Viewer = () => {
                     <ListItem
                         key={pocket.id}
                         isHovered={isHovered}
-                        onClick={() => handlePocketClick(pocket.id)}
+                        // onClick={() => handlePocketClick(pocket.id)}
                     >
                         <strong>Group {pocket.id}</strong>
                         <p>
@@ -88,7 +86,7 @@ export const Viewer = () => {
 
     return (
         <WorkingLayout headerSlot={ColorToggle} panelSlot={PocketList}>
-            {!modelEntities && <div>Loading...</div>}
+            {!entityMap && <div>Loading...</div>}
             <Canvas>
                 <ambientLight />
                 <pointLight intensity={1} position={[500, 500, 1000]} />
