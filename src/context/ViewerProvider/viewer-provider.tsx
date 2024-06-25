@@ -1,3 +1,4 @@
+import { colorizeEntities } from "@/components/model/helpers";
 import {
 	Colorization,
 	EntityGeometryInfo,
@@ -7,7 +8,7 @@ import {
 	RgbString,
 } from "@/types/global";
 import * as React from "react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import rawAdjacencyGraph from "./adjacency_graph.json";
 import rawEntityGeometryInfo from "./entity_geometry_info.json";
@@ -74,6 +75,10 @@ type ViewerContextType = {
     pocketGroups: PocketGroup[] | null;
     cameraPosition?: THREE.Vector3;
     setCameraPosition: (position: THREE.Vector3) => void;
+    hoveredEntityIds: Set<EntityGeometryInfo["entityId"]>;
+    onHoverEntityStart: (entityId: EntityGeometryInfo["entityId"]) => void;
+    onHoverEntityEnd: (entityId: EntityGeometryInfo["entityId"]) => void;
+    hoveredPocketIds: Set<PocketGroup["id"]>;
 };
 
 const ViewerContext = createContext<ViewerContextType>({
@@ -86,6 +91,10 @@ const ViewerContext = createContext<ViewerContextType>({
     pocketGroups: null, // Abstract
     cameraPosition: new THREE.Vector3(0, 0, 300),
     setCameraPosition: () => {},
+    hoveredEntityIds: new Set(),
+    onHoverEntityStart: () => {},
+    onHoverEntityEnd: () => {},
+    hoveredPocketIds: new Set(),
 });
 
 export const useViewer = () => useContext(ViewerContext);
@@ -101,8 +110,42 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     const [cameraPosition, setCameraPosition] = useState<THREE.Vector3>(
         new THREE.Vector3(0, 0, 300)
     );
+    const [hoveredEntityIds, setHoveredEntityIds] = useState<
+        Set<EntityGeometryInfo["entityId"]>
+    >(new Set());
+    const hoveredPocketIds = new Set<PocketGroup["id"]>();
+    // for each pocket group, if any entity is hovered, add the pocket group id to the set
+    pocketGroupsResponse.forEach((pocketGroup) => {
+        pocketGroup.entityIds.forEach((entityId) => {
+            if (hoveredEntityIds.has(entityId)) {
+                hoveredPocketIds.add(pocketGroup.id);
+            }
+        });
+    });
+
     const pocketGroups = pocketGroupsResponse;
     const geometryMap = entityGeometryMapResponse;
+
+    const onHoverEntityStart = (entityId: EntityGeometryInfo["entityId"]) => {
+        setHoveredEntityIds((prev) => new Set(prev.add(entityId)));
+    };
+    const onHoverEntityEnd = (entityId: EntityGeometryInfo["entityId"]) => {
+        setHoveredEntityIds(
+            (prev) => new Set([...prev].filter((id) => id !== entityId))
+        );
+    };
+
+    useEffect(() => {
+        entityMap &&
+            setEntityMap(
+                colorizeEntities(
+                    entityMap,
+                    hoveredEntityIds,
+                    pocketGroups,
+                    colorization
+                )
+            );
+    }, [hoveredEntityIds, colorization]);
 
     return (
         <ViewerContext.Provider
@@ -116,6 +159,10 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
                 geometryMap,
                 cameraPosition,
                 setCameraPosition,
+                hoveredEntityIds,
+                onHoverEntityStart,
+                onHoverEntityEnd,
+                hoveredPocketIds,
             }}
         >
             {children}

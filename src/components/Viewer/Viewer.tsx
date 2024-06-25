@@ -1,9 +1,8 @@
 import { useViewer } from "@/context/ViewerProvider/viewer-provider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
-import { Colorization, EntityGeometryInfo, ModelEntity } from "@/types/global";
+import { Colorization, ModelEntity } from "@/types/global";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { useState } from "react";
 import { styled } from "styled-components";
 import { Vector3 } from "three";
 import { Model } from "../model/model";
@@ -21,11 +20,11 @@ export const Viewer = () => {
         pocketGroups,
         cameraPosition,
         setCameraPosition,
+        hoveredEntityIds,
+        onHoverEntityEnd,
+        onHoverEntityStart,
+        hoveredPocketIds,
     } = useViewer();
-
-    const [hoveredEntityId, setHoveredEntityId] = useState<
-        EntityGeometryInfo["entityId"] | null
-    >(null);
 
     const ColorToggle = (
         <ToggleGroup
@@ -60,9 +59,7 @@ export const Viewer = () => {
     const PocketList = (
         <>
             {pocketGroups?.map((pocket) => {
-                const isHovered =
-                    hoveredEntityId !== null &&
-                    pocket.entityIds.has(hoveredEntityId);
+                const isHovered = hoveredPocketIds.has(pocket.id);
                 return (
                     <ListItem
                         key={pocket.id}
@@ -97,7 +94,7 @@ export const Viewer = () => {
                     near={1}
                     position={[0, 0, 300]}
                 /> */}
-                <Model setHoveredEntityId={setHoveredEntityId} />
+                <Model/>
             </Canvas>
         </WorkingLayout>
     );
