@@ -1,4 +1,5 @@
 import { PersonAvatar } from "@/components/common/PersonAvatar/PersonAvatar";
+import { ScrollFadeFooter } from "@/components/common/ScrollFadeFooter/ScrollFadeFooter";
 import { TitleCard } from "@/components/common/TitleCard/TitleCard";
 import { TopNav } from "@/components/TopNav/TopNav";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +14,11 @@ export const Dashboard = () => {
     return (
         <div className="h-full w-full overflow-y-auto flex flex-col">
             <TopNav />
-            <h1>Dashboard</h1>
-            <div>
-                <div className="grid grid-cols-4 sm:grid-cols-2 gap-3">
+            <div className="px-4">
+                <h1 className="text-3xl font-bold text-slate-700 mb-3">
+                    Ready for Review
+                </h1>
+                <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mx-auto gap-3 align-middle">
                     <TitleCard
                         title="Model Viewer"
                         imageUrl="https://via.placeholder.com/150"
@@ -37,8 +40,79 @@ export const Dashboard = () => {
                         size="lg"
                         onClick={() => navigation("3")}
                     />
+                    <TitleCard
+                        title="Model Viewer"
+                        imageUrl="https://via.placeholder.com/150"
+                        descriptionSlot={descriptionSlotElement}
+                        size="lg"
+                        onClick={() => navigation("3")}
+                    />
+                    <TitleCard
+                        title="Model Viewer"
+                        imageUrl="https://via.placeholder.com/150"
+                        descriptionSlot={descriptionSlotElement}
+                        size="lg"
+                        onClick={() => navigation("3")}
+                    />
+                    <TitleCard
+                        title="Model Viewer"
+                        imageUrl="https://via.placeholder.com/150"
+                        descriptionSlot={descriptionSlotElement}
+                        size="lg"
+                        onClick={() => navigation("3")}
+                    />
+                    <TitleCard
+                        title="Model Viewer"
+                        imageUrl="https://via.placeholder.com/150"
+                        descriptionSlot={descriptionSlotElement}
+                        size="lg"
+                        onClick={() => navigation("3")}
+                    />
+                    <TitleCard
+                        title="Model Viewer"
+                        imageUrl="https://via.placeholder.com/150"
+                        descriptionSlot={descriptionSlotElement}
+                        size="lg"
+                        onClick={() => navigation("3")}
+                    />
+                    <TitleCard
+                        title="Model Viewer"
+                        imageUrl="https://via.placeholder.com/150"
+                        descriptionSlot={descriptionSlotElement}
+                        size="lg"
+                        onClick={() => navigation("3")}
+                    />
+                    <TitleCard
+                        title="Model Viewer"
+                        imageUrl="https://via.placeholder.com/150"
+                        descriptionSlot={descriptionSlotElement}
+                        size="lg"
+                        onClick={() => navigation("3")}
+                    />
+                    <TitleCard
+                        title="Model Viewer"
+                        imageUrl="https://via.placeholder.com/150"
+                        descriptionSlot={descriptionSlotElement}
+                        size="lg"
+                        onClick={() => navigation("3")}
+                    />
+                    <TitleCard
+                        title="Model Viewer"
+                        imageUrl="https://via.placeholder.com/150"
+                        descriptionSlot={descriptionSlotElement}
+                        size="lg"
+                        onClick={() => navigation("3")}
+                    />
+                    <TitleCard
+                        title="Model Viewer"
+                        imageUrl="https://via.placeholder.com/150"
+                        descriptionSlot={descriptionSlotElement}
+                        size="lg"
+                        onClick={() => navigation("3")}
+                    />
                 </div>
             </div>
+            <ScrollFadeFooter />
         </div>
     );
 };

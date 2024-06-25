@@ -1,3 +1,4 @@
+import { TopNav } from "@/components/TopNav/TopNav";
 import { useViewer } from "@/context/ViewerProvider/viewer-provider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
 import { Colorization } from "@/types/global";
@@ -63,8 +64,10 @@ export const Viewer = () => {
         </>
     );
 
+    const TopBar = <TopNav>{ColorToggle}</TopNav>;
+
     return (
-        <WorkingLayout headerSlot={ColorToggle} panelSlot={PocketList}>
+        <WorkingLayout headerSlot={TopBar} panelSlot={PocketList}>
             {!entityMap && <div>Loading...</div>}
             <Canvas>
                 <ambientLight />
