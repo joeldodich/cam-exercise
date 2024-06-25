@@ -1,30 +1,24 @@
 import {
+	Colorization,
 	EdgeRelationshipArray,
 	EntityGeometryInfo,
 	EntityIdPair,
 	EntityType,
 	GraphEdgeType,
+	ModelEntity,
 	PocketGroup,
+	RgbString,
 } from "@/types/global";
 import * as React from "react";
 import * as THREE from "three";
-import { GLTFLoader } from "three-stdlib";
 
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext } from "react";
 import rawAdjacencyGraph from "./adjacency_graph.json";
 import rawEdgeMetadata from "./adjacency_graph_edge_metadata.json";
-import demoFile from "./colored_glb.glb?url";
 import entityGeometryInfo from "./entity_geometry_info.json";
 import rgbToId from "./rgb_id_to_entity_id_map.json";
 
-type RgbString = string;
-interface ModelEntity {
-    id: EntityGeometryInfo["entityId"];
-    bufferGeometry: THREE.BufferGeometry;
-    color: RgbString;
-    featureId?: string;
-    details: EntityGeometryInfo | undefined;
-}
+
 
 let adjacencyGraph: Record<
     EntityGeometryInfo["entityId"],
@@ -81,11 +75,7 @@ Object.keys(adjacencyGraph).forEach((entityId) => {
     }
 });
 
-export enum Colorization {
-    NONE = "none",
-    ENTITY = "entity",
-    POCKET = "pocket",
-}
+
 
 const colorToEntityIdMap = rgbToId as Record<
     string,
@@ -153,6 +143,7 @@ type ViewerContextType = {
     colorization: Colorization;
     setColorization: (colorization: Colorization) => void;
     modelEntities: ModelEntity[] | null;
+	setModelEntities: (modelEntities: ModelEntity[]) => void;
     geometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> | null;
     pocketGroups: PocketGroup[] | null;
 };
@@ -161,6 +152,7 @@ const ViewerContext = createContext<ViewerContextType>({
     colorization: Colorization.NONE,
     setColorization: () => {},
     modelEntities: null,
+	setModelEntities: () => {},
     geometryMap: null, // Abstract
     pocketGroups: null, // Abstract
 });
@@ -175,55 +167,34 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
         Colorization.NONE
     );
 
-    const colorMap = applyColorization(colorization);
+    // const colorMap = applyColorization(colorization);
 
-    const updatePocketInfo = () => {
-        let modelEntitiesWithPocketId = modelEntities;
-        if (!modelEntitiesWithPocketId) return;
+    // const updatePocketInfo = () => {
+    //     let modelEntitiesWithPocketId = modelEntities;
+    //     if (!modelEntitiesWithPocketId) return;
 
-        pocketGroups.forEach((pocket) => {
-            let groupBoundingBox = new THREE.Box3();
+    //     pocketGroups.forEach((pocket) => {
+    //         let groupBoundingBox = new THREE.Box3();
 
-            pocket.entityIds.forEach((id) => {
-                const entityIndex = modelEntitiesWithPocketId.findIndex(
-                    (entity) => entity.id === id
-                );
-                if (entityIndex === -1) return;
-                modelEntitiesWithPocketId[entityIndex].featureId = pocket.id;
+    //         pocket.entityIds.forEach((id) => {
+    //             const entityIndex = modelEntitiesWithPocketId.findIndex(
+    //                 (entity) => entity.id === id
+    //             );
+    //             if (entityIndex === -1) return;
+    //             modelEntitiesWithPocketId[entityIndex].featureId = pocket.id;
 
-                const mesh =
-                    modelEntitiesWithPocketId[entityIndex].bufferGeometry;
-                if (!mesh.boundingBox) {
-                    mesh.computeBoundingBox();
-                }
+    //             const mesh =
+    //                 modelEntitiesWithPocketId[entityIndex].bufferGeometry;
+    //             if (!mesh.boundingBox) {
+    //                 mesh.computeBoundingBox();
+    //             }
 
-                mesh.boundingBox && groupBoundingBox.union(mesh.boundingBox);
-            });
-            pocket.boundingBox = groupBoundingBox;
-        });
-        setModelEntities(modelEntitiesWithPocketId);
-    };
-
-    useMemo(() => {
-        new GLTFLoader().load(demoFile, (gltf) => {
-            const newModuleEntities: ModelEntity[] = [];
-            gltf.scene.traverse((element) => {
-                if (element.type !== "Mesh") return;
-
-                const meshElement = element as THREE.Mesh;
-                const elementFixedId = meshElement.name.split("Product_1_")[1];
-
-                newModuleEntities.push({
-                    id: elementFixedId,
-                    bufferGeometry:
-                        meshElement.geometry as THREE.BufferGeometry,
-                    color: colorMap[elementFixedId] || defaultColor,
-                    details: entityGeometryMap.get(elementFixedId),
-                });
-            });
-            setModelEntities(newModuleEntities);
-        });
-    }, [colorization, modelEntities]);
+    //             mesh.boundingBox && groupBoundingBox.union(mesh.boundingBox);
+    //         });
+    //         pocket.boundingBox = groupBoundingBox;
+    //     });
+    //     setModelEntities(modelEntitiesWithPocketId);
+    // };
 
     return (
         <ViewerContext.Provider
@@ -231,6 +202,7 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
                 colorization,
                 setColorization,
                 modelEntities,
+				setModelEntities,
                 pocketGroups,
                 geometryMap: entityGeometryMap,
             }}

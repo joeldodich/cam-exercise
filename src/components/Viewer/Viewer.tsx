@@ -1,9 +1,8 @@
 import {
-    Colorization,
     useViewer,
 } from "@/context/ViewerProvider/viewer-provider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
-import { EntityGeometryInfo } from "@/types/global";
+import { Colorization, EntityGeometryInfo } from "@/types/global";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import { useState } from "react";
@@ -11,6 +10,7 @@ import { styled } from "styled-components";
 import { Vector3 } from "three";
 import { Model } from "../model/model";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+
 
 const ListItem = styled.li<{ isHovered: boolean }>`
     background-color: ${(props) => (props.isHovered ? "lightblue" : "none")};

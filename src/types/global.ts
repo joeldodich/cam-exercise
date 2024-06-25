@@ -1,5 +1,6 @@
-import { Box3, Vector3 } from "three";
+import { Box3, BufferGeometry, Vector3 } from "three";
 
+export type RgbString = string;
 export interface EntityGeometryInfo {
     entityType: EntityType;
     entityId: string;
@@ -56,3 +57,17 @@ export type PocketGroup = {
     entityIds: Set<EntityGeometryInfo["entityId"]>;
     boundingBox?: Box3;
 };
+
+export interface ModelEntity {
+    id: EntityGeometryInfo["entityId"];
+    bufferGeometry: BufferGeometry;
+    color: RgbString;
+    featureId?: string;
+    details: EntityGeometryInfo | undefined;
+}
+
+export enum Colorization {
+    NONE = "none",
+    ENTITY = "entity",
+    POCKET = "pocket",
+}
