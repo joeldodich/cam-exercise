@@ -11,7 +11,7 @@ export const Dashboard = () => {
         </span>
     );
     return (
-        <div>
+        <div className="h-full w-full overflow-y-auto flex flex-col">
             <TopNav />
             <h1>Dashboard</h1>
             <div>
@@ -21,21 +21,21 @@ export const Dashboard = () => {
                         imageUrl="https://via.placeholder.com/150"
                         descriptionSlot={descriptionSlotElement}
                         size="lg"
-                        onClick={() => navigation("/dashboard/1")}
+                        onClick={() => navigation("1")}
                     />
                     <TitleCard
                         title="Model Viewer"
                         imageUrl="https://via.placeholder.com/150"
                         descriptionSlot={descriptionSlotElement}
                         size="lg"
-                        onClick={() => navigation("/dashboard/2")}
+                        onClick={() => navigation("2")}
                     />
                     <TitleCard
                         title="Model Viewer"
                         imageUrl="https://via.placeholder.com/150"
                         descriptionSlot={descriptionSlotElement}
                         size="lg"
-                        onClick={() => navigation("/dashboard/3")}
+                        onClick={() => navigation("3")}
                     />
                 </div>
             </div>
