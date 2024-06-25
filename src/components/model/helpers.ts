@@ -19,37 +19,6 @@ Object.keys(rgbToId).forEach((entry) => {
     idToColorMap[colorToEntityIdMap[entry]] = `rgb(${r}, ${g}, ${b})`;
 });
 
-// const generateColorMapping = (
-//     colorizationSelection: Colorization,
-//     defaultColor: RgbString
-// ) => {
-//     let colorMap = {} as Record<EntityGeometryInfo["entityId"], RgbString>;
-//     switch (colorizationSelection) {
-//         case Colorization.NONE:
-//             Object.keys(idToColorMap).forEach((entityId) => {
-//                 colorMap[entityId] = defaultColor;
-//             });
-//             return colorMap;
-//         case Colorization.ENTITY:
-//             colorMap = idToColorMap;
-//             return colorMap;
-//         case Colorization.POCKET:
-//             pocketGroups.forEach((group) => {
-//                 const randomColor = `rgb(${Math.floor(
-//                     Math.random() * 256
-//                 )}, ${Math.floor(Math.random() * 256)}, ${Math.floor(
-//                     Math.random() * 256
-//                 )})`;
-//                 group.entityIds.forEach((entityId) => {
-//                     colorMap[entityId] = randomColor;
-//                 });
-//             });
-//             return colorMap;
-//         default:
-//             return idToColorMap;
-//     }
-// };
-
 const generateRandomColor = () => {
     return `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(
         Math.random() * 256
