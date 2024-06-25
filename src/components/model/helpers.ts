@@ -16,7 +16,8 @@ export const updateColorMapping = (
 ) => {
     let updatedColorMap: Map<EntityGeometryInfo["entityId"], RgbString> =
         new Map(colorMap);
-    // debugger
+    let pocketColorMap = new Map<string, string>();
+
     if (colorization === Colorization.NONE) {
         colorMap.forEach((color, entityId) => {
             updatedColorMap.set(entityId, defaultGlobalColor);
@@ -24,13 +25,11 @@ export const updateColorMapping = (
     } else if (colorization === Colorization.ENTITY) {
         colorMap.forEach((color, entityId) => {
             const updatedColor = originalColorMap.get(entityId) as RgbString;
-            console.log(updatedColor);
             updatedColorMap.set(entityId, updatedColor);
         });
     } else if (colorization === Colorization.POCKET) {
-        const pocketColorMap = new Map<string, string>();
         pocketGroupings.forEach((pocket) => {
-            const fixedPocketColor = colorMap.get(
+            const fixedPocketColor = originalColorMap.get(
                 pocket.entityIds.values().next().value
             );
             pocketColorMap.set(
@@ -53,22 +52,30 @@ export const updateColorMapping = (
         });
     }
 
-    hoveredSet.forEach((entityId) => {
-        if (colorMap.has(entityId)) {
-            updatedColorMap.set(entityId, "rgb(0, 0, 255)");
+    // Override color for hovered entities
+    hoveredSet.forEach((hoveredEntityId) => {
+        if (colorMap.has(hoveredEntityId)) {
+            updatedColorMap.set(hoveredEntityId, "rgb(0, 0, 255)");
         }
         if (colorization === Colorization.POCKET) {
-            const parentPocket = pocketGroupings.find((pocket) =>
-                pocket.entityIds.has(entityId)
-            );
-            if (parentPocket !== undefined) {
-                parentPocket.entityIds.forEach((entityId) => {
-                    updatedColorMap.set(entityId, "rgb(0, 0, 255)");
-                });
-            }
+            console.log("Pocket re-colorization");
+            pocketGroupings.forEach((pocket) => {
+                if (pocket.entityIds.has(hoveredEntityId)) {
+                    pocket.entityIds.forEach((entityId) => {
+                        updatedColorMap.set(entityId, "rgb(0, 0, 255)");
+                    });
+                } else {
+                    pocket.entityIds.forEach((entityId) => {
+                        updatedColorMap.set(
+                            entityId,
+                            pocketColorMap.get(pocket.id) || defaultGlobalColor
+                        );
+                    });
+                }
+            });
         }
     });
-    // debugger
+
     return updatedColorMap as Map<EntityGeometryInfo["entityId"], RgbString>;
 };
 
