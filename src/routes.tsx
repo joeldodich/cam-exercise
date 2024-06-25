@@ -9,7 +9,7 @@ export const routes = [
         element: <div>Workspace</div>,
     },
     {
-        path: "cam-assist",
+        path: "dashboard",
         element: <Outlet />,
         children: [
             {
@@ -17,7 +17,7 @@ export const routes = [
                 element: <Dashboard />,
             },
             {
-                path: "partId",
+                path: ":partId",
                 element: (
                     <ViewerProvider>
                         <Viewer />

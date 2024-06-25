@@ -5,7 +5,7 @@ import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { styled } from "styled-components";
 import { Vector3 } from "three";
-import { Model } from "../../components/model/model";
+import { Model } from "../../components/Model/Model";
 import { ToggleGroup, ToggleGroupItem } from "../../components/ui/toggle-group";
 
 const ListItem = styled.li<{ isHovered: boolean }>`
