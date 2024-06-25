@@ -1,12 +1,12 @@
 import { useViewer } from "@/context/ViewerProvider/viewer-provider";
 import { useCubeTexture } from "@react-three/drei";
-
+import { Dispatch, SetStateAction } from "react";
 
 interface ModelProps {
-    hoveredEntityId?: string;
+    setHoveredEntityId: Dispatch<SetStateAction<string | null>>;
 }
 
-export const Model = () => {
+export const Model = ({ setHoveredEntityId = () => {} }: ModelProps) => {
     const { modelEntities } = useViewer();
     const texture = useCubeTexture(
         ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"],
@@ -19,7 +19,8 @@ export const Model = () => {
                 <mesh
                     geometry={ent.bufferGeometry}
                     key={index}
-                    onPointerOver={() => console.log(ent.bufferGeometry.id)}
+                    onPointerOver={() => setHoveredEntityId(ent.id)}
+                    onPointerOut={() => setHoveredEntityId(null)}
                 >
                     <meshPhysicalMaterial
                         envMap={texture}
