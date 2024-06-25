@@ -163,22 +163,21 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     );
 
     const updatePocketInfo = () => {
-        let modelEntitiesWithoutPocketIds = modelEntities;
-        if (!modelEntitiesWithoutPocketIds) return;
+        let modelEntitiesWithPocketId = modelEntities;
+        if (!modelEntitiesWithPocketId) return;
 
         pocketGroups.forEach((pocket) => {
             let groupBoundingBox = new THREE.Box3();
 
             pocket.entityIds.forEach((id) => {
-                const entityIndex = modelEntitiesWithoutPocketIds.findIndex(
+                const entityIndex = modelEntitiesWithPocketId.findIndex(
                     (entity) => entity.id === id
                 );
                 if (entityIndex === -1) return;
-                modelEntitiesWithoutPocketIds[entityIndex].featureId =
-                    pocket.id;
+                modelEntitiesWithPocketId[entityIndex].featureId = pocket.id;
 
                 const mesh =
-                    modelEntitiesWithoutPocketIds[entityIndex].bufferGeometry;
+                    modelEntitiesWithPocketId[entityIndex].bufferGeometry;
                 if (!mesh.boundingBox) {
                     mesh.computeBoundingBox();
                 }
@@ -187,7 +186,7 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
             });
             pocket.boundingBox = groupBoundingBox;
         });
-        setModelEntities(modelEntitiesWithoutPocketIds);
+        setModelEntities(modelEntitiesWithPocketId);
     };
 
     useMemo(() => {
