@@ -6,10 +6,6 @@ import { Viewer } from "./pages/Viewer/Viewer";
 export const routes = [
     {
         path: "/",
-        element: <div>Workspace</div>,
-    },
-    {
-        path: "dashboard",
         element: <Outlet />,
         children: [
             {
