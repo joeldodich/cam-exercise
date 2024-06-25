@@ -19,11 +19,11 @@ export const updateColorMapping = (
     let pocketColorMap = new Map<string, string>();
 
     if (colorization === Colorization.NONE) {
-        colorMap.forEach((color, entityId) => {
+        colorMap.forEach((__, entityId) => {
             updatedColorMap.set(entityId, defaultGlobalColor);
         });
     } else if (colorization === Colorization.ENTITY) {
-        colorMap.forEach((color, entityId) => {
+        colorMap.forEach((__, entityId) => {
             const updatedColor = originalColorMap.get(entityId) as RgbString;
             updatedColorMap.set(entityId, updatedColor);
         });
@@ -37,7 +37,7 @@ export const updateColorMapping = (
                 fixedPocketColor || defaultGlobalColor
             );
         });
-        colorMap.forEach((color, entityId) => {
+        colorMap.forEach((__, entityId) => {
             const parentPocket = pocketGroupings.find((pocket) =>
                 pocket.entityIds.has(entityId)
             );
@@ -47,6 +47,8 @@ export const updateColorMapping = (
                     pocketColorMap.get(parentPocket.id) || defaultGlobalColor
                 );
             } else {
+                //TODO: This is hiding a bug where the pointer is picking
+                // through the model and marking multiple entities as hovered
                 updatedColorMap.set(entityId, defaultGlobalColor);
             }
         });

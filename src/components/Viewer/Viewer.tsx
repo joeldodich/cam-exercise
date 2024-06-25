@@ -20,9 +20,6 @@ export const Viewer = () => {
         pocketGroups,
         cameraPosition,
         setCameraPosition,
-        hoveredEntityIds,
-        onHoverEntityEnd,
-        onHoverEntityStart,
         hoveredPocketIds,
     } = useViewer();
 
@@ -49,13 +46,13 @@ export const Viewer = () => {
             .next().value as ModelEntity["id"];
         const entity = entityMap?.get(entityId);
         const position = entity?.details?.centerNormal;
-        // debugger;
         if (position) {
             console.log("Setting position...", position);
             position.setLength(300);
             setCameraPosition(new Vector3(...position));
         }
     };
+
     const PocketList = (
         <>
             {pocketGroups?.map((pocket) => {
@@ -89,12 +86,7 @@ export const Viewer = () => {
                 <pointLight intensity={1} position={[500, 500, 1000]} />
                 <OrbitControls makeDefault dampingFactor={0.8} />
                 <CameraRig cameraPosition={cameraPosition} />
-                {/* <OrthographicCamera
-                    makeDefault
-                    near={1}
-                    position={[0, 0, 300]}
-                /> */}
-                <Model/>
+                <Model />
             </Canvas>
         </WorkingLayout>
     );
