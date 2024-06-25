@@ -4,7 +4,10 @@ import {
 } from "@/context/ViewerProvider/viewer-provider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
 import { EntityGeometryInfo } from "@/types/global";
-import { OrbitControls, OrthographicCamera } from "@react-three/drei";
+import {
+    OrbitControls,
+    OrthographicCamera
+} from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
 import { styled } from "styled-components";
@@ -75,6 +78,7 @@ export const Viewer = () => {
                     <pointLight intensity={1} position={[500, 500, 1000]} />
                     <OrbitControls
                         makeDefault
+                        // onChange={() => controlsRef?.current?.update()}
                         // panSpeed={1}
                         dampingFactor={0.8}
                         domElement={document.body}

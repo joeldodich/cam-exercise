@@ -22,6 +22,7 @@ interface ModelEntity {
     id: EntityGeometryInfo["entityId"];
     bufferGeometry: THREE.BufferGeometry;
     color: RgbString;
+    featureId?: string;
 }
 
 let adjacencyGraph: Record<
@@ -153,6 +154,7 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     const [colorization, setColorization] = React.useState<Colorization>(
         Colorization.NONE
     );
+
     const colorMap = applyColorization(colorization);
 
     const texture = useCubeTexture(
@@ -160,24 +162,33 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
         { path: "/cubeMap/" }
     );
 
-    /* Load the model and set the model entities */
-    modelEntities &&
+    const updatePocketInfo = () => {
+        let modelEntitiesWithoutPocketIds = modelEntities;
+        if (!modelEntitiesWithoutPocketIds) return;
+
         pocketGroups.forEach((pocket) => {
             let groupBoundingBox = new THREE.Box3();
 
             pocket.entityIds.forEach((id) => {
-                const mesh = modelEntities.find(
-                    (ent) => ent.id === id
-                )?.bufferGeometry;
-                if (!mesh) return;
+                const entityIndex = modelEntitiesWithoutPocketIds.findIndex(
+                    (entity) => entity.id === id
+                );
+                if (entityIndex === -1) return;
+                modelEntitiesWithoutPocketIds[entityIndex].featureId =
+                    pocket.id;
+
+                const mesh =
+                    modelEntitiesWithoutPocketIds[entityIndex].bufferGeometry;
                 if (!mesh.boundingBox) {
                     mesh.computeBoundingBox();
                 }
+
                 mesh.boundingBox && groupBoundingBox.union(mesh.boundingBox);
             });
             pocket.boundingBox = groupBoundingBox;
         });
-    /* Load the model and set the model entities */
+        setModelEntities(modelEntitiesWithoutPocketIds);
+    };
 
     useMemo(() => {
         new GLTFLoader().load(demoFile, (gltf) => {
