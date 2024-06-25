@@ -8,6 +8,7 @@ import demoFile from "./colored_glb.glb?url";
 
 export const Model = () => {
     const {
+        entityColorMap,
         entityMap,
         setEntityMap,
         geometryMap,
@@ -31,7 +32,7 @@ export const Model = () => {
                 loadedEntities.set(elementFixedId, {
                     id: elementFixedId,
                     bufferGeometry: meshElement.geometry as BufferGeometry,
-                    color: defaultColor,
+                    color: entityColorMap.get(elementFixedId) || defaultColor,
                     details: geometryMap.get(elementFixedId),
                 });
             });

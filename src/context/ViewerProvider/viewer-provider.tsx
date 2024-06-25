@@ -1,4 +1,7 @@
-import { colorizeEntities } from "@/components/model/helpers";
+import {
+	applyColorMapping,
+	updateColorMapping,
+} from "@/components/model/helpers";
 import {
 	Colorization,
 	EntityGeometryInfo,
@@ -13,6 +16,7 @@ import * as THREE from "three";
 import rawAdjacencyGraph from "./adjacency_graph.json";
 import rawEntityGeometryInfo from "./entity_geometry_info.json";
 import { updatePocketGroupings } from "./helpers";
+import rgbToId from "./rgb_id_to_entity_id_map.json";
 
 let adjacencyGraph: Record<
     EntityGeometryInfo["entityId"],
@@ -63,10 +67,26 @@ rawEntityGeometryInfo.forEach((entity) => {
     });
 });
 
+const rawColorToEntityIdMap = rgbToId as Record<
+    string,
+    EntityGeometryInfo["entityId"]
+>;
+let idToColorMapResponse: Map<EntityGeometryInfo["entityId"], RgbString> =
+    new Map();
+Object.keys(rawColorToEntityIdMap).forEach((colorString, index) => {
+    // debugger;
+    const [r, g, b] = colorString.split("-").map(Number);
+    const entityId =
+        rawColorToEntityIdMap[Object.keys(rawColorToEntityIdMap)[index]];
+    idToColorMapResponse.set(entityId, `rgb(${r}, ${g}, ${b})`);
+    // debugger;
+});
+
 type ViewerContextType = {
     colorization: Colorization;
     setColorization: (colorization: Colorization) => void;
     defaultColor: RgbString;
+    entityColorMap: Map<EntityGeometryInfo["entityId"], RgbString>;
     entityMap: Map<EntityGeometryInfo["entityId"], ModelEntity> | null;
     setEntityMap: (
         modelEntities: Map<EntityGeometryInfo["entityId"], ModelEntity>
@@ -85,6 +105,7 @@ const ViewerContext = createContext<ViewerContextType>({
     colorization: Colorization.NONE,
     setColorization: () => {},
     defaultColor: "rgb(120, 120, 120)",
+    entityColorMap: new Map(),
     entityMap: null,
     setEntityMap: () => {},
     geometryMap: null, // Abstract
@@ -107,6 +128,10 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     const [colorization, setColorization] = useState<Colorization>(
         Colorization.NONE
     );
+    const [entityColorMap, setEntityColorMap] =
+        useState<Map<EntityGeometryInfo["entityId"], RgbString>>(
+            idToColorMapResponse
+        );
     const [cameraPosition, setCameraPosition] = useState<THREE.Vector3>(
         new THREE.Vector3(0, 0, 300)
     );
@@ -136,16 +161,18 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     useEffect(() => {
-        entityMap &&
-            setEntityMap(
-                colorizeEntities(
-                    entityMap,
-                    hoveredEntityIds,
-                    pocketGroups,
-                    colorization
-                )
-            );
-    }, [hoveredEntityIds, colorization]);
+        if (!entityMap) return;
+        const updatedColorMap = updateColorMapping(
+            entityColorMap,
+            hoveredEntityIds,
+            pocketGroups,
+            colorization,
+            idToColorMapResponse
+        );
+        const recoloredEntities = applyColorMapping(entityMap, updatedColorMap);
+        setEntityColorMap(updatedColorMap);
+        setEntityMap(recoloredEntities);
+    }, [colorization, hoveredEntityIds, pocketGroups]);
 
     return (
         <ViewerContext.Provider
@@ -153,6 +180,7 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
                 colorization,
                 setColorization,
                 defaultColor: "rgb(120, 120, 120)",
+                entityColorMap,
                 entityMap,
                 setEntityMap,
                 pocketGroups,
