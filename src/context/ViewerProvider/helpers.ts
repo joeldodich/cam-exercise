@@ -3,7 +3,9 @@ import {
     EntityGeometryInfo,
     EntityIdPair,
     GraphEdgeType,
+    ModelEntity,
     PocketGroup,
+    RgbString,
 } from "@/types/global";
 import rawEdgeMetadata from "./adjacency_graph_edge_metadata.json";
 
@@ -49,4 +51,14 @@ export const updatePocketGroupings = (
             );
         }
     });
+};
+
+export const assignColorToEntities = (
+    entities: ModelEntity[],
+    color: RgbString = "rgb(120, 120, 120)"
+) => {
+    return entities.map((entity) => ({
+        ...entity,
+        color,
+    }));
 };
