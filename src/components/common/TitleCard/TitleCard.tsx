@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 import { twMerge } from "tailwind-merge";
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "../../ui/card";
 
 interface TitleCardProps {
     title: string;

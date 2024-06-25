@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
-import { PersonAvatar } from "../common/PersonAvatar";
+import { PersonAvatar } from "../PersonAvatar";
 import { TitleCard } from "./TitleCard";
 
 const meta: Meta<typeof TitleCard> = {

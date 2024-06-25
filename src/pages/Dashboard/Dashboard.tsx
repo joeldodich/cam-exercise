@@ -1,5 +1,5 @@
 import { PersonAvatar } from "@/components/common/PersonAvatar";
-import { TitleCard } from "@/components/TitleCard/TitleCard";
+import { TitleCard } from "@/components/common/TitleCard/TitleCard";
 
 export const Dashboard = () => {
     const descriptionSlotElement = (
