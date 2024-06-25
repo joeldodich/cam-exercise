@@ -6,57 +6,62 @@ import { BufferGeometry, Mesh } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import demoFile from "./colored_glb.glb?url";
 
-
 interface ModelProps {
     setHoveredEntityId: Dispatch<SetStateAction<string | null>>;
 }
 
 export const Model = ({ setHoveredEntityId }: ModelProps) => {
-    const { modelEntities, setModelEntities, geometryMap, colorization } = useViewer();
+    const {
+        modelEntities,
+        setModelEntities,
+        geometryMap,
+        colorization,
+        defaultColor,
+    } = useViewer();
 
     const texture = useCubeTexture(
         ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"],
         { path: "/cubeMap/" }
     );
-    const defaultColor = "rgb(120, 120, 120)";
 
     useMemo(() => {
+        let newModuleEntities: Map<string, ModelEntity>;
         new GLTFLoader().load(demoFile, (gltf) => {
-            const newModuleEntities: ModelEntity[] = [];
             gltf.scene.traverse((element) => {
                 if (element.type !== "Mesh" || !geometryMap) return;
-
                 const meshElement = element as Mesh;
                 const elementFixedId = meshElement.name.split("Product_1_")[1];
 
-                newModuleEntities.push({
+                newModuleEntities.set(elementFixedId, {
                     id: elementFixedId,
-                    bufferGeometry:
-                        meshElement.geometry as BufferGeometry,
+                    bufferGeometry: meshElement.geometry as BufferGeometry,
                     color: defaultColor,
                     details: geometryMap.get(elementFixedId),
                 });
             });
             setModelEntities(newModuleEntities);
         });
+
+        return () => {
+            newModuleEntities.clear();
+        };
     }, [colorization, modelEntities]);
 
     if (!modelEntities) return null;
     return (
         <group>
-            {modelEntities.map((ent, index) => (
+            {Array.from(modelEntities.values()).map((entity) => (
                 <mesh
-                    geometry={ent.bufferGeometry}
-                    key={index}
-                    onPointerOver={() => setHoveredEntityId(ent.id)}
-                    onPointerOut={() => setHoveredEntityId(null)}
+                    key={entity.id}
+                    geometry={entity.bufferGeometry}
+                    onPointerEnter={() => setHoveredEntityId(entity.id)}
+                    onPointerLeave={() => setHoveredEntityId(null)}
                 >
-                    <meshPhysicalMaterial
+                    <meshStandardMaterial
+                        color={entity.color}
                         envMap={texture}
-                        reflectivity={0.01}
-                        roughness={0.18}
-                        metalness={0.05}
-                        color={ent.color}
+                        metalness={0.5}
+                        roughness={0.5}
                     />
                 </mesh>
             ))}
