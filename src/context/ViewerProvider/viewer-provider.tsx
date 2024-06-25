@@ -1,7 +1,7 @@
 import {
 	applyColorMapping,
 	updateColorMapping,
-} from "@/components/model/helpers";
+} from "@/context/ViewerProvider/helpers";
 import {
 	Colorization,
 	EntityGeometryInfo,
@@ -138,6 +138,7 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     const [hoveredEntityIds, setHoveredEntityIds] = useState<
         Set<EntityGeometryInfo["entityId"]>
     >(new Set());
+
     const hoveredPocketIds = new Set<PocketGroup["id"]>();
     // for each pocket group, if any entity is hovered, add the pocket group id to the set
     pocketGroupsResponse.forEach((pocketGroup) => {
