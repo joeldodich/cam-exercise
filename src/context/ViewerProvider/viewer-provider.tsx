@@ -68,8 +68,8 @@ type ViewerContextType = {
     setModelEntities: (modelEntities: ModelEntity[]) => void;
     geometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> | null;
     pocketGroups: PocketGroup[] | null;
-    snapToPosition?: THREE.Vector3;
-    setSnapToPosition: (position?: THREE.Vector3) => void;
+    cameraPosition?: THREE.Vector3;
+    setCameraPosition: (position: THREE.Vector3) => void;
 };
 
 const ViewerContext = createContext<ViewerContextType>({
@@ -79,8 +79,8 @@ const ViewerContext = createContext<ViewerContextType>({
     setModelEntities: () => {},
     geometryMap: null, // Abstract
     pocketGroups: null, // Abstract
-    snapToPosition: undefined,
-    setSnapToPosition: () => {},
+    cameraPosition: new THREE.Vector3(0, 0, 300),
+    setCameraPosition: () => {},
 });
 
 export const useViewer = () => useContext(ViewerContext);
@@ -92,7 +92,7 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     const [colorization, setColorization] = useState<Colorization>(
         Colorization.NONE
     );
-    const [snapToPosition, setSnapToPosition] = useState<THREE.Vector3>();
+    const [cameraPosition, setCameraPosition] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, 300));
     const pocketGroups = pocketGroupsResponse;
     const geometryMap = entityGeometryMapResponse;
 
@@ -105,8 +105,8 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
                 setModelEntities,
                 pocketGroups,
                 geometryMap,
-                snapToPosition,
-                setSnapToPosition,
+                cameraPosition,
+                setCameraPosition,
             }}
         >
             {children}

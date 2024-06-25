@@ -2,7 +2,7 @@ import { useViewer } from "@/context/ViewerProvider/viewer-provider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
 import { Colorization, EntityGeometryInfo, ModelEntity } from "@/types/global";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
 import { styled } from "styled-components";
 import { Vector3 } from "three";
@@ -19,8 +19,8 @@ export const Viewer = () => {
         colorization,
         setColorization,
         pocketGroups,
-        snapToPosition,
-        setSnapToPosition,
+        cameraPosition,
+        setCameraPosition,
     } = useViewer();
 
     const [hoveredEntityId, setHoveredEntityId] = useState<
@@ -51,9 +51,12 @@ export const Viewer = () => {
             .next().value as ModelEntity["id"];
         const entity = modelEntities?.find((entity) => entity.id === entityId);
         const position = entity?.details?.centerNormal;
-        debugger;
+        // debugger;
         if (position) {
-            setSnapToPosition(new Vector3(...position));
+            console.log("Setting position...", position);
+            //the position value is a unit vector. Scale it by 300 to get a reasonable camera position
+            position.multiplyScalar(300);
+            setCameraPosition(new Vector3(...position));
         }
     };
     const PocketList = (
@@ -89,14 +92,8 @@ export const Viewer = () => {
             <Canvas>
                 <ambientLight />
                 <pointLight intensity={1} position={[500, 500, 1000]} />
-                <OrbitControls
-                    makeDefault
-                    dampingFactor={0.8}
-                />
-                <CameraRig
-                    snapToPosition={snapToPosition}
-                    setSnapToPosition={setSnapToPosition}
-                />
+                <OrbitControls makeDefault dampingFactor={0.8} />
+                <CameraRig cameraPosition={cameraPosition} />
                 {/* <OrthographicCamera
                     makeDefault
                     near={1}
@@ -108,20 +105,13 @@ export const Viewer = () => {
     );
 };
 
-const CameraRig = ({
-    snapToPosition,
-    setSnapToPosition,
-}: {
-    snapToPosition?: Vector3;
-    setSnapToPosition: (position?: Vector3) => void;
-}) => {
-    snapToPosition !== undefined &&
-        useFrame((state) => {
-            // state.camera.position.lerp(snapToPosition, 0.1);
-            state.camera.lookAt(snapToPosition);
-            setSnapToPosition(undefined);
-        });
+const CameraRig = ({ cameraPosition }: { cameraPosition?: Vector3 }) => {
     return (
-        <OrthographicCamera makeDefault near={1} position={[0,0,300]}  />
+        <OrthographicCamera
+            makeDefault
+            near={1}
+            castShadow
+            position={cameraPosition}
+        />
     );
 };
