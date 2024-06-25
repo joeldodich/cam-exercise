@@ -1,21 +1,16 @@
 import {
 	Colorization,
-	EdgeRelationshipArray,
 	EntityGeometryInfo,
-	EntityIdPair,
 	EntityType,
-	GraphEdgeType,
 	ModelEntity,
-	PocketGroup
+	PocketGroup,
 } from "@/types/global";
 import * as React from "react";
+import { createContext, useContext, useState } from "react";
 import * as THREE from "three";
-
-import { createContext, useContext } from "react";
 import rawAdjacencyGraph from "./adjacency_graph.json";
-import rawEdgeMetadata from "./adjacency_graph_edge_metadata.json";
-import entityGeometryInfo from "./entity_geometry_info.json";
-
+import rawEntityGeometryInfo from "./entity_geometry_info.json";
+import { updatePocketGroupings } from "./helpers";
 
 
 let adjacencyGraph: Record<
@@ -23,39 +18,7 @@ let adjacencyGraph: Record<
     EntityGeometryInfo["entityId"][]
 > = rawAdjacencyGraph;
 
-let edgeMetadata: Record<EntityIdPair, EdgeRelationshipArray> =
-    rawEdgeMetadata as unknown as Record<EntityIdPair, EdgeRelationshipArray>;
-
-function isConcaveOrTangentConcave(
-    edgeRelationshipArray: EdgeRelationshipArray
-): boolean {
-    return edgeRelationshipArray.some(
-        (arrayVal) => arrayVal === GraphEdgeType.CONCAVE
-    );
-}
-
-function dfs(
-    entityIdKey: EntityGeometryInfo["entityId"],
-    currentGroup: PocketGroup,
-    visited: Set<EntityGeometryInfo["entityId"]>
-) {
-    visited.add(entityIdKey);
-    currentGroup.entityIds.add(entityIdKey);
-
-    adjacencyGraph[entityIdKey]?.forEach((connectedEntityId) => {
-        const entityIdPair: EntityIdPair = `${entityIdKey}-${connectedEntityId}`;
-        const edgePairMetadata = edgeMetadata[entityIdPair];
-
-        if (
-            isConcaveOrTangentConcave(edgePairMetadata) &&
-            !visited.has(connectedEntityId)
-        ) {
-            dfs(connectedEntityId, currentGroup, visited);
-        }
-    });
-}
-
-const pocketGroups: PocketGroup[] = [];
+const pocketGroupsResponse: PocketGroup[] = [];
 const visited = new Set<string>();
 let groupId = 0;
 
@@ -65,18 +28,20 @@ Object.keys(adjacencyGraph).forEach((entityId) => {
             id: groupId.toString(),
             entityIds: new Set<string>(),
         };
-        dfs(entityId, currentGroup, visited);
+        updatePocketGroupings(entityId, currentGroup, visited, adjacencyGraph);
         if (currentGroup.entityIds.size > 1) {
-            pocketGroups.push(currentGroup);
+            pocketGroupsResponse.push(currentGroup);
             groupId++;
         }
     }
 });
 
-let entityGeometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> =
-    new Map();
-entityGeometryInfo.forEach((entity) => {
-    entityGeometryMap.set(entity.entityId, {
+let entityGeometryMapResponse: Map<
+    EntityGeometryInfo["entityId"],
+    EntityGeometryInfo
+> = new Map();
+rawEntityGeometryInfo.forEach((entity) => {
+    entityGeometryMapResponse.set(entity.entityId, {
         ...entity,
         entityType: EntityType.ENTITY_TYPE_CYLINDER,
         centerUv: new THREE.Vector3(
@@ -101,7 +66,7 @@ type ViewerContextType = {
     colorization: Colorization;
     setColorization: (colorization: Colorization) => void;
     modelEntities: ModelEntity[] | null;
-	setModelEntities: (modelEntities: ModelEntity[]) => void;
+    setModelEntities: (modelEntities: ModelEntity[]) => void;
     geometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> | null;
     pocketGroups: PocketGroup[] | null;
 };
@@ -110,7 +75,7 @@ const ViewerContext = createContext<ViewerContextType>({
     colorization: Colorization.NONE,
     setColorization: () => {},
     modelEntities: null,
-	setModelEntities: () => {},
+    setModelEntities: () => {},
     geometryMap: null, // Abstract
     pocketGroups: null, // Abstract
 });
@@ -118,41 +83,14 @@ const ViewerContext = createContext<ViewerContextType>({
 export const useViewer = () => useContext(ViewerContext);
 
 export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
-    const [modelEntities, setModelEntities] = React.useState<
-        ModelEntity[] | null
-    >(null);
-    const [colorization, setColorization] = React.useState<Colorization>(
+    const [modelEntities, setModelEntities] = useState<ModelEntity[] | null>(
+        null
+    );
+    const [colorization, setColorization] = useState<Colorization>(
         Colorization.NONE
     );
-
-    // const colorMap = applyColorization(colorization);
-
-    // const updatePocketInfo = () => {
-    //     let modelEntitiesWithPocketId = modelEntities;
-    //     if (!modelEntitiesWithPocketId) return;
-
-    //     pocketGroups.forEach((pocket) => {
-    //         let groupBoundingBox = new THREE.Box3();
-
-    //         pocket.entityIds.forEach((id) => {
-    //             const entityIndex = modelEntitiesWithPocketId.findIndex(
-    //                 (entity) => entity.id === id
-    //             );
-    //             if (entityIndex === -1) return;
-    //             modelEntitiesWithPocketId[entityIndex].featureId = pocket.id;
-
-    //             const mesh =
-    //                 modelEntitiesWithPocketId[entityIndex].bufferGeometry;
-    //             if (!mesh.boundingBox) {
-    //                 mesh.computeBoundingBox();
-    //             }
-
-    //             mesh.boundingBox && groupBoundingBox.union(mesh.boundingBox);
-    //         });
-    //         pocket.boundingBox = groupBoundingBox;
-    //     });
-    //     setModelEntities(modelEntitiesWithPocketId);
-    // };
+	const pocketGroups = pocketGroupsResponse;
+	const geometryMap = entityGeometryMapResponse;
 
     return (
         <ViewerContext.Provider
@@ -160,9 +98,9 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
                 colorization,
                 setColorization,
                 modelEntities,
-				setModelEntities,
+                setModelEntities,
                 pocketGroups,
-                geometryMap: entityGeometryMap,
+                geometryMap,
             }}
         >
             {children}
