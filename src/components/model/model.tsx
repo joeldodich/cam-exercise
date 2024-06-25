@@ -20,27 +20,26 @@ export const Model = ({ setHoveredEntityId }: ModelProps) => {
     );
 
     useMemo(() => {
-        let newModuleEntities: Map<string, ModelEntity>;
+        const loadedEntities: Map<string, ModelEntity> = new Map();
         new GLTFLoader().load(demoFile, (gltf) => {
             gltf.scene.traverse((element) => {
                 if (element.type !== "Mesh" || !geometryMap) return;
                 const meshElement = element as Mesh;
                 const elementFixedId = meshElement.name.split("Product_1_")[1];
-
-                newModuleEntities.set(elementFixedId, {
+                loadedEntities.set(elementFixedId, {
                     id: elementFixedId,
                     bufferGeometry: meshElement.geometry as BufferGeometry,
                     color: defaultColor,
                     details: geometryMap.get(elementFixedId),
                 });
             });
-            setEntityMap(newModuleEntities);
+            setEntityMap(loadedEntities);
         });
 
         return () => {
-            newModuleEntities.clear();
+            loadedEntities.clear();
         };
-    }, [colorization, entityMap]);
+    }, []);
 
     if (!entityMap) return null;
     return (
