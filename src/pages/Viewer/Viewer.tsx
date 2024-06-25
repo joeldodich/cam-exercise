@@ -1,3 +1,4 @@
+import { TitleCard } from "@/components/common/TitleCard/TitleCard";
 import { TopNav } from "@/components/TopNav/TopNav";
 import { useViewer } from "@/context/ViewerProvider/viewer-provider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
@@ -44,21 +45,25 @@ export const Viewer = () => {
             {pocketGroups?.map((pocket) => {
                 const isHovered = hoveredPocketIds.has(pocket.id);
                 return (
-                    <ListItem
+                    <TitleCard
                         key={pocket.id}
-                        isHovered={isHovered}
+                        title={`Group ${pocket.id}`}
+                        imageUrl="https://via.placeholder.com/150"
+                        descriptionSlot={
+                            <span>
+                                {pocket.boundingBox &&
+                                    `X: ${pocket.boundingBox.min.x.toFixed(
+                                        2
+                                    )} Y: ${pocket.boundingBox.min.y.toFixed(
+                                        2
+                                    )} Z: ${pocket.boundingBox.min.z.toFixed(
+                                        2
+                                    )}`}
+                            </span>
+                        }
+                        // isHovered={isHovered}
                         // onClick={() => handlePocketClick(pocket.id)}
-                    >
-                        <strong>Group {pocket.id}</strong>
-                        <p>
-                            {pocket.boundingBox &&
-                                `X: ${pocket.boundingBox.min.x.toFixed(
-                                    2
-                                )} Y: ${pocket.boundingBox.min.y.toFixed(
-                                    2
-                                )} Z: ${pocket.boundingBox.min.z.toFixed(2)}`}
-                        </p>
-                    </ListItem>
+                    />
                 );
             })}
         </>

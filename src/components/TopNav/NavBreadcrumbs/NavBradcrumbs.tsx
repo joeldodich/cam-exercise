@@ -30,7 +30,9 @@ export const NavBreadcrumbs = () => {
                         </BreadcrumbLink>
                     )}
                     {!onSinglePartPage && (
-                        <BreadcrumbPage>Analysis Dashboard</BreadcrumbPage>
+                        <BreadcrumbPage>
+                            <strong>Analysis Dashboard</strong>
+                        </BreadcrumbPage>
                     )}
                 </BreadcrumbItem>
                 {onSinglePartPage && (
@@ -40,7 +42,7 @@ export const NavBreadcrumbs = () => {
                         </BreadcrumbSeparator>
                         <BreadcrumbItem>
                             <BreadcrumbPage>
-                                {`Part ${params.partId}`}
+                                <strong>{`Part ${params.partId}`}</strong>
                             </BreadcrumbPage>
                         </BreadcrumbItem>
                     </>
