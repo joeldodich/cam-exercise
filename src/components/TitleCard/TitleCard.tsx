@@ -29,6 +29,7 @@ const ImageContainer = styled.div<{ imageUrl: string; size: "sm" | "lg" }>`
     height: ${(props) => (props.size === "sm" ? "2.5rem" : "5rem")};
     min-width: ${(props) => (props.size === "sm" ? "2.5rem" : "5rem")};
     display: block;
+    border-radius: 0.5rem;
 `;
 
 export const TitleCard = ({
@@ -38,17 +39,22 @@ export const TitleCard = ({
     descriptionSlot,
     actionSlot,
 }: TitleCardProps) => {
-    const titleFont = size === "sm" ? "text-2xl" : "text-4xl";
-    const titleClasses = twMerge(titleFont, "font-bold", "text-center", "mb-4");
+    const titleFont = size === "sm" ? "text-sm" : "text-xl";
+    const titleClasses = twMerge(titleFont, "truncate", "text-left");
 
     return (
         <StyledCard>
-            <CardContent className="flex flex-row gap-2 h-full items-center">
-                <ImageContainer imageUrl={imageUrl} size={size} />
-                <div>
+            <CardContent className="flex flex-1 flex-row gap-2 h-full w-full items-center p-3">
+                <ImageContainer
+                    imageUrl={imageUrl}
+                    size={size}
+                    className="rounded-sm border-2"
+                />
+                <div className="flex flex-1 truncate flex-col">
                     <div className={titleClasses}>{title}</div>
                     {descriptionSlot}
                 </div>
+                {actionSlot}
             </CardContent>
         </StyledCard>
     );
