@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
-import { Viewer } from "./components/Viewer/Viewer";
 import { ViewerProvider } from "./context/ViewerProvider/viewer-provider";
+import { Dashboard } from "./pages/Dashboard/Dashboard";
+import { Viewer } from "./pages/Viewer/Viewer";
 
 export const routes = [
     {
@@ -13,7 +14,7 @@ export const routes = [
         children: [
             {
                 index: true,
-                element: <div>Part List</div>,
+                element: <Dashboard />,
             },
             {
                 path: "partId",
@@ -25,4 +26,5 @@ export const routes = [
             },
         ],
     },
+    { path: "*", element: <div>404</div> },
 ];

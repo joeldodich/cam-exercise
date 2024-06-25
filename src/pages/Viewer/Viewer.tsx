@@ -1,12 +1,12 @@
 import { useViewer } from "@/context/ViewerProvider/viewer-provider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
-import { Colorization, ModelEntity } from "@/types/global";
+import { Colorization } from "@/types/global";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { styled } from "styled-components";
 import { Vector3 } from "three";
-import { Model } from "../model/model";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { Model } from "../../components/model/model";
+import { ToggleGroup, ToggleGroupItem } from "../../components/ui/toggle-group";
 
 const ListItem = styled.li<{ isHovered: boolean }>`
     background-color: ${(props) => (props.isHovered ? "lightblue" : "none")};
@@ -19,7 +19,6 @@ export const Viewer = () => {
         setColorization,
         pocketGroups,
         cameraPosition,
-        setCameraPosition,
         hoveredPocketIds,
     } = useViewer();
 
@@ -38,20 +37,6 @@ export const Viewer = () => {
             </ToggleGroupItem>
         </ToggleGroup>
     );
-
-    const handlePocketClick = (pocketId: string) => {
-        const entityId = pocketGroups
-            ?.find((pocket) => pocket.id === pocketId)
-            ?.entityIds.values()
-            .next().value as ModelEntity["id"];
-        const entity = entityMap?.get(entityId);
-        const position = entity?.details?.centerNormal;
-        if (position) {
-            console.log("Setting position...", position);
-            position.setLength(300);
-            setCameraPosition(new Vector3(...position));
-        }
-    };
 
     const PocketList = (
         <>
