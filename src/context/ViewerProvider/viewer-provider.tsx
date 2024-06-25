@@ -6,8 +6,7 @@ import {
 	EntityType,
 	GraphEdgeType,
 	ModelEntity,
-	PocketGroup,
-	RgbString,
+	PocketGroup
 } from "@/types/global";
 import * as React from "react";
 import * as THREE from "three";
@@ -16,7 +15,6 @@ import { createContext, useContext } from "react";
 import rawAdjacencyGraph from "./adjacency_graph.json";
 import rawEdgeMetadata from "./adjacency_graph_edge_metadata.json";
 import entityGeometryInfo from "./entity_geometry_info.json";
-import rgbToId from "./rgb_id_to_entity_id_map.json";
 
 
 
@@ -74,46 +72,6 @@ Object.keys(adjacencyGraph).forEach((entityId) => {
         }
     }
 });
-
-
-
-const colorToEntityIdMap = rgbToId as Record<
-    string,
-    EntityGeometryInfo["entityId"]
->;
-let idToColorMap = {} as Record<EntityGeometryInfo["entityId"], RgbString>;
-Object.keys(rgbToId).forEach((entry) => {
-    const [r, g, b] = entry.split("-").map(Number);
-    idToColorMap[colorToEntityIdMap[entry]] = `rgb(${r}, ${g}, ${b})`;
-});
-const defaultColor = "rgb(120, 120, 120)";
-const applyColorization = (colorizationSelection: Colorization) => {
-    let colorMap = {} as Record<EntityGeometryInfo["entityId"], RgbString>;
-    switch (colorizationSelection) {
-        case Colorization.NONE:
-            Object.keys(idToColorMap).forEach((entityId) => {
-                colorMap[entityId] = defaultColor;
-            });
-            return colorMap;
-        case Colorization.ENTITY:
-            colorMap = idToColorMap;
-            return colorMap;
-        case Colorization.POCKET:
-            pocketGroups.forEach((group) => {
-                const randomColor = `rgb(${Math.floor(
-                    Math.random() * 256
-                )}, ${Math.floor(Math.random() * 256)}, ${Math.floor(
-                    Math.random() * 256
-                )})`;
-                group.entityIds.forEach((entityId) => {
-                    colorMap[entityId] = randomColor;
-                });
-            });
-            return colorMap;
-        default:
-            return idToColorMap;
-    }
-};
 
 let entityGeometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> =
     new Map();
