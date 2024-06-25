@@ -5,6 +5,7 @@ import { Card, CardContent } from "../ui/card";
 interface TitleCardProps {
     title: string;
     imageUrl: string;
+    onClick?: () => void;
     size?: "sm" | "lg";
     descriptionSlot?: React.ReactNode;
     actionSlot?: React.ReactNode;
@@ -38,12 +39,13 @@ export const TitleCard = ({
     size = "sm",
     descriptionSlot,
     actionSlot,
+    onClick,
 }: TitleCardProps) => {
     const titleFont = size === "sm" ? "text-sm" : "text-xl";
     const titleClasses = twMerge(titleFont, "truncate", "text-left");
 
     return (
-        <StyledCard>
+        <StyledCard onClick={onClick}>
             <CardContent className="flex flex-1 flex-row gap-2 h-full w-full items-center p-3">
                 <ImageContainer
                     imageUrl={imageUrl}
