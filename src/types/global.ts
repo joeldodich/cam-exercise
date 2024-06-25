@@ -1,11 +1,11 @@
-import { Box3 } from "three";
+import { Box3, Vector3 } from "three";
 
 export interface EntityGeometryInfo {
     entityType: EntityType;
     entityId: string;
-    centerUv: number[];
-    centerPoint: number[];
-    centerNormal: number[];
+    centerUv: Vector3;
+    centerPoint: Vector3;
+    centerNormal: Vector3;
     area: number;
     minRadius: number;
     minPosRadius: number;
@@ -19,10 +19,10 @@ export interface EdgeCurveChain {
 }
 
 export type EdgeCurve = {
-    startPoint: number[];
-    midPoint: number[];
-    endPoint: number[];
-    startPointNormal: number[];
+    startPoint: Vector3;
+    midPoint: Vector3;
+    endPoint: Vector3;
+    startPointNormal: Vector3;
 };
 
 export enum EntityType {

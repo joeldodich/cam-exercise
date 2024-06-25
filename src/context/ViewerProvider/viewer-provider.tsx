@@ -1,11 +1,11 @@
 import {
-    EdgeRelationshipArray,
-    EntityGeometryInfo,
-    EntityIdPair,
-    GraphEdgeType,
-    PocketGroup,
+	EdgeRelationshipArray,
+	EntityGeometryInfo,
+	EntityIdPair,
+	EntityType,
+	GraphEdgeType,
+	PocketGroup,
 } from "@/types/global";
-import { useCubeTexture } from "@react-three/drei";
 import * as React from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three-stdlib";
@@ -23,6 +23,7 @@ interface ModelEntity {
     bufferGeometry: THREE.BufferGeometry;
     color: RgbString;
     featureId?: string;
+    details: EntityGeometryInfo | undefined;
 }
 
 let adjacencyGraph: Record<
@@ -95,7 +96,6 @@ Object.keys(rgbToId).forEach((entry) => {
     const [r, g, b] = entry.split("-").map(Number);
     idToColorMap[colorToEntityIdMap[entry]] = `rgb(${r}, ${g}, ${b})`;
 });
-
 const defaultColor = "rgb(120, 120, 120)";
 const applyColorization = (colorizationSelection: Colorization) => {
     let colorMap = {} as Record<EntityGeometryInfo["entityId"], RgbString>;
@@ -125,24 +125,44 @@ const applyColorization = (colorizationSelection: Colorization) => {
     }
 };
 
-const entityGeometryGraph = entityGeometryInfo as EntityGeometryInfo[];
+let entityGeometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> =
+    new Map();
+entityGeometryInfo.forEach((entity) => {
+    entityGeometryMap.set(entity.entityId, {
+        ...entity,
+        entityType: EntityType.ENTITY_TYPE_CYLINDER,
+        centerUv: new THREE.Vector3(
+            entity.centerUv[0],
+            entity.centerUv[2],
+            entity.centerUv[1]
+        ),
+        centerPoint: new THREE.Vector3(
+            entity.centerPoint[0],
+            entity.centerPoint[2],
+            entity.centerPoint[1]
+        ),
+        centerNormal: new THREE.Vector3(
+            entity.centerNormal[0],
+            entity.centerNormal[2],
+            entity.centerNormal[1]
+        ),
+    });
+});
 
 type ViewerContextType = {
     colorization: Colorization;
-    texture: THREE.CubeTexture;
     setColorization: (colorization: Colorization) => void;
     modelEntities: ModelEntity[] | null;
-    pocketGroups: PocketGroup[];
-    geometryGraph: EntityGeometryInfo[];
+    geometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> | null;
+    pocketGroups: PocketGroup[] | null;
 };
 
 const ViewerContext = createContext<ViewerContextType>({
     colorization: Colorization.NONE,
-    texture: new THREE.CubeTexture(),
     setColorization: () => {},
     modelEntities: null,
-    geometryGraph: [], // Abstract
-    pocketGroups: [], // Abstract
+    geometryMap: null, // Abstract
+    pocketGroups: null, // Abstract
 });
 
 export const useViewer = () => useContext(ViewerContext);
@@ -156,11 +176,6 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     );
 
     const colorMap = applyColorization(colorization);
-
-    const texture = useCubeTexture(
-        ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"],
-        { path: "/cubeMap/" }
-    );
 
     const updatePocketInfo = () => {
         let modelEntitiesWithPocketId = modelEntities;
@@ -203,21 +218,21 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
                     bufferGeometry:
                         meshElement.geometry as THREE.BufferGeometry,
                     color: colorMap[elementFixedId] || defaultColor,
+                    details: entityGeometryMap.get(elementFixedId),
                 });
             });
             setModelEntities(newModuleEntities);
         });
-    }, [colorization]);
+    }, [colorization, modelEntities]);
 
     return (
         <ViewerContext.Provider
             value={{
                 colorization,
                 setColorization,
-                texture,
                 modelEntities,
                 pocketGroups,
-                geometryGraph: entityGeometryGraph,
+                geometryMap: entityGeometryMap,
             }}
         >
             {children}
