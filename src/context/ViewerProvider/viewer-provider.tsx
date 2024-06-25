@@ -134,17 +134,17 @@ entityGeometryInfo.forEach((entity) => {
         centerUv: new THREE.Vector3(
             entity.centerUv[0],
             entity.centerUv[2],
-            entity.centerUv[1]
+            -entity.centerUv[1]
         ),
         centerPoint: new THREE.Vector3(
             entity.centerPoint[0],
             entity.centerPoint[2],
-            entity.centerPoint[1]
+            -entity.centerPoint[1]
         ),
         centerNormal: new THREE.Vector3(
             entity.centerNormal[0],
             entity.centerNormal[2],
-            entity.centerNormal[1]
+            -entity.centerNormal[1]
         ),
     });
 });
