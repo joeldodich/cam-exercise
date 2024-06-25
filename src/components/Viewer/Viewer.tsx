@@ -1,16 +1,13 @@
-import {
-    useViewer,
-} from "@/context/ViewerProvider/viewer-provider";
+import { useViewer } from "@/context/ViewerProvider/viewer-provider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
-import { Colorization, EntityGeometryInfo } from "@/types/global";
+import { Colorization, EntityGeometryInfo, ModelEntity } from "@/types/global";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { useState } from "react";
 import { styled } from "styled-components";
 import { Vector3 } from "three";
 import { Model } from "../model/model";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-
 
 const ListItem = styled.li<{ isHovered: boolean }>`
     background-color: ${(props) => (props.isHovered ? "lightblue" : "none")};
@@ -22,7 +19,8 @@ export const Viewer = () => {
         colorization,
         setColorization,
         pocketGroups,
-        geometryMap,
+        snapToPosition,
+        setSnapToPosition,
     } = useViewer();
 
     const [hoveredEntityId, setHoveredEntityId] = useState<
@@ -45,6 +43,19 @@ export const Viewer = () => {
         </ToggleGroup>
     );
 
+    const handlePocketClick = (pocketId: string) => {
+        //get the first entity in the pocket group
+        const entityId = pocketGroups
+            ?.find((pocket) => pocket.id === pocketId)
+            ?.entityIds.values()
+            .next().value as ModelEntity["id"];
+        const entity = modelEntities?.find((entity) => entity.id === entityId);
+        const position = entity?.details?.centerNormal;
+        debugger;
+        if (position) {
+            setSnapToPosition(new Vector3(...position));
+        }
+    };
     const PocketList = (
         <>
             {pocketGroups?.map((pocket) => {
@@ -52,7 +63,11 @@ export const Viewer = () => {
                     hoveredEntityId !== null &&
                     pocket.entityIds.has(hoveredEntityId);
                 return (
-                    <ListItem key={pocket.id} isHovered={isHovered}>
+                    <ListItem
+                        key={pocket.id}
+                        isHovered={isHovered}
+                        onClick={() => handlePocketClick(pocket.id)}
+                    >
                         <strong>Group {pocket.id}</strong>
                         <p>
                             {pocket.boundingBox &&
@@ -77,24 +92,36 @@ export const Viewer = () => {
                 <OrbitControls
                     makeDefault
                     dampingFactor={0.8}
-                    domElement={document.body}
                 />
-                {/* <CameraRig position={cameraPosition} /> */}
-                <OrthographicCamera
+                <CameraRig
+                    snapToPosition={snapToPosition}
+                    setSnapToPosition={setSnapToPosition}
+                />
+                {/* <OrthographicCamera
                     makeDefault
                     near={1}
                     position={[0, 0, 300]}
-                />
+                /> */}
                 <Model setHoveredEntityId={setHoveredEntityId} />
             </Canvas>
         </WorkingLayout>
     );
 };
 
-const CameraRig = ({ position }: { position: Vector3 }) => {
-    useThree((state) => {
-        state.camera.position.lerp(position, 0.1);
-        state.camera.lookAt(position);
-    });
-    return <OrthographicCamera near={1} position={[0, 0, 300]} />;
+const CameraRig = ({
+    snapToPosition,
+    setSnapToPosition,
+}: {
+    snapToPosition?: Vector3;
+    setSnapToPosition: (position?: Vector3) => void;
+}) => {
+    snapToPosition !== undefined &&
+        useFrame((state) => {
+            // state.camera.position.lerp(snapToPosition, 0.1);
+            state.camera.lookAt(snapToPosition);
+            setSnapToPosition(undefined);
+        });
+    return (
+        <OrthographicCamera makeDefault near={1} position={[0,0,300]}  />
+    );
 };

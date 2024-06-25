@@ -12,7 +12,6 @@ import rawAdjacencyGraph from "./adjacency_graph.json";
 import rawEntityGeometryInfo from "./entity_geometry_info.json";
 import { updatePocketGroupings } from "./helpers";
 
-
 let adjacencyGraph: Record<
     EntityGeometryInfo["entityId"],
     EntityGeometryInfo["entityId"][]
@@ -46,18 +45,18 @@ rawEntityGeometryInfo.forEach((entity) => {
         entityType: EntityType.ENTITY_TYPE_CYLINDER,
         centerUv: new THREE.Vector3(
             entity.centerUv[0],
-            entity.centerUv[2],
-            -entity.centerUv[1]
+            entity.centerUv[1],
+            entity.centerUv[2]
         ),
         centerPoint: new THREE.Vector3(
             entity.centerPoint[0],
-            entity.centerPoint[2],
-            -entity.centerPoint[1]
+            entity.centerPoint[1],
+            entity.centerPoint[2]
         ),
         centerNormal: new THREE.Vector3(
             entity.centerNormal[0],
-            entity.centerNormal[2],
-            -entity.centerNormal[1]
+            entity.centerNormal[1],
+            entity.centerNormal[2]
         ),
     });
 });
@@ -69,6 +68,8 @@ type ViewerContextType = {
     setModelEntities: (modelEntities: ModelEntity[]) => void;
     geometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> | null;
     pocketGroups: PocketGroup[] | null;
+    snapToPosition?: THREE.Vector3;
+    setSnapToPosition: (position?: THREE.Vector3) => void;
 };
 
 const ViewerContext = createContext<ViewerContextType>({
@@ -78,6 +79,8 @@ const ViewerContext = createContext<ViewerContextType>({
     setModelEntities: () => {},
     geometryMap: null, // Abstract
     pocketGroups: null, // Abstract
+    snapToPosition: undefined,
+    setSnapToPosition: () => {},
 });
 
 export const useViewer = () => useContext(ViewerContext);
@@ -89,8 +92,9 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     const [colorization, setColorization] = useState<Colorization>(
         Colorization.NONE
     );
-	const pocketGroups = pocketGroupsResponse;
-	const geometryMap = entityGeometryMapResponse;
+    const [snapToPosition, setSnapToPosition] = useState<THREE.Vector3>();
+    const pocketGroups = pocketGroupsResponse;
+    const geometryMap = entityGeometryMapResponse;
 
     return (
         <ViewerContext.Provider
@@ -101,6 +105,8 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
                 setModelEntities,
                 pocketGroups,
                 geometryMap,
+                snapToPosition,
+                setSnapToPosition,
             }}
         >
             {children}
