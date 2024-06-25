@@ -1,4 +1,4 @@
-import { PersonAvatar } from "@/components/common/PersonAvatar";
+import { PersonAvatar } from "@/components/common/PersonAvatar/PersonAvatar";
 import { TitleCard } from "@/components/common/TitleCard/TitleCard";
 
 export const Dashboard = () => {
