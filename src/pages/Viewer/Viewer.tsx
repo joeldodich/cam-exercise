@@ -43,7 +43,7 @@ export const Viewer = () => {
                         title={`Group ${pocket.id}`}
                         imageUrl="https://via.placeholder.com/150"
                         descriptionSlot={
-                            <span>
+                            <span className="text-xs">
                                 {pocket.boundingBox &&
                                     `X: ${pocket.boundingBox.min.x.toFixed(
                                         2
