@@ -1,6 +1,6 @@
 import { TitleCard } from "@/components/common/TitleCard/TitleCard";
 import { TopNav } from "@/components/TopNav/TopNav";
-import { useViewer } from "@/context/AnalysisProvider/viewer-provider";
+import { useViewer } from "@/context/AnalysisProvider/AnalysisProvider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
 import { Colorization } from "@/types/global";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
