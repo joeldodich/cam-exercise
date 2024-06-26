@@ -1,4 +1,4 @@
-import { useViewer } from "@/context/AnalysisProvider/AnalysisProvider";
+import { useAnalysis } from "@/context/AnalysisProvider/AnalysisProvider";
 import { ModelEntity } from "@/types/global";
 import { useCubeTexture } from "@react-three/drei";
 import { useMemo } from "react";
@@ -15,7 +15,7 @@ export const Model = () => {
         defaultColor,
         onHoverEntityEnd,
         onHoverEntityStart,
-    } = useViewer();
+    } = useAnalysis();
 
     const texture = useCubeTexture(
         ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"],

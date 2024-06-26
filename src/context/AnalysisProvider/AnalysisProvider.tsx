@@ -82,7 +82,7 @@ Object.keys(rawColorToEntityIdMap).forEach((colorString, index) => {
     // debugger;
 });
 
-type ViewerContextType = {
+type AnalysisContextType = {
     colorization: Colorization;
     setColorization: (colorization: Colorization) => void;
     defaultColor: RgbString;
@@ -101,7 +101,7 @@ type ViewerContextType = {
     hoveredPocketIds: Set<PocketGroup["id"]>;
 };
 
-const ViewerContext = createContext<ViewerContextType>({
+const AnalysisContext = createContext<AnalysisContextType>({
     colorization: Colorization.NONE,
     setColorization: () => {},
     defaultColor: "rgb(120, 120, 120)",
@@ -118,9 +118,9 @@ const ViewerContext = createContext<ViewerContextType>({
     hoveredPocketIds: new Set(),
 });
 
-export const useViewer = () => useContext(ViewerContext);
+export const useAnalysis = () => useContext(AnalysisContext);
 
-export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
+export const AnalysisProvider = ({ children }: { children: React.ReactNode }) => {
     const [entityMap, setEntityMap] = useState<Map<
         EntityGeometryInfo["entityId"],
         ModelEntity
@@ -176,7 +176,7 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     }, [colorization, hoveredEntityIds, pocketGroups]);
 
     return (
-        <ViewerContext.Provider
+        <AnalysisContext.Provider
             value={{
                 colorization,
                 setColorization,
@@ -195,6 +195,6 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
             }}
         >
             {children}
-        </ViewerContext.Provider>
+        </AnalysisContext.Provider>
     );
 };
