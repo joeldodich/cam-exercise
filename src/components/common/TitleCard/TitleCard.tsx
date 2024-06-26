@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { styled } from "styled-components";
 import { twMerge } from "tailwind-merge";
 import { Card, CardContent } from "../../ui/card";
@@ -61,3 +62,11 @@ export const TitleCard = ({
         </StyledCard>
     );
 };
+
+export const TitleCardLoader = styled(Skeleton)<{ size: "sm" | "lg" }>`
+    flex: 1;
+    max-width: 24rem;
+    min-width: 19rem;
+    height: ${(props) => (props.size === "sm" ? "4rem" : "6.5rem")};
+    border-radius: 0.5rem;
+`;
