@@ -26,7 +26,7 @@ export const WorkingLayout = ({
         <div className="h-full w-full min-w-full flex flex-row bg-slate-50">
             <div className="h-full flex flex-col flex-auto">
                 <div>{headerSlot}</div>
-                <div className="mx-3 mb-3 bg-white rounded-lg border-2 border-slate-300 flex-grow">
+                <div className="mx-3 mb-3 bg-white rounded-lg border-2 border-slate-300 flex-grow overflow-clip">
                     {children}
                 </div>
             </div>

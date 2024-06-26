@@ -2,7 +2,7 @@ import { TitleCard } from "@/components/common/TitleCard/TitleCard";
 import { TopNav } from "@/components/TopNav/TopNav";
 import { useAnalysis } from "@/context/AnalysisProvider/AnalysisProvider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
-import { Colorization } from "@/types/global";
+import { Colorization, PocketGroup } from "@/types/global";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Vector3 } from "three";
@@ -16,7 +16,17 @@ export const Viewer = () => {
         setColorization,
         pocketGroups,
         cameraPosition,
+        selectedPocketId,
+        setSelectedPocketId,
     } = useAnalysis();
+
+    const toggleSelectedPocket = (selection: PocketGroup["id"] | null) => {
+        setSelectedPocketId(selection);
+    };
+
+    const selectedPocket = pocketGroups?.find(
+        (pocket) => pocket.id === selectedPocketId
+    );
 
     const ColorToggle = (
         <ToggleGroup
@@ -56,6 +66,7 @@ export const Viewer = () => {
                         }
                         // isHovered={isHovered}
                         // onClick={() => handlePocketClick(pocket.id)}
+                        onClick={() => toggleSelectedPocket(pocket.id)}
                     />
                 );
             })}
@@ -72,6 +83,11 @@ export const Viewer = () => {
                 <pointLight intensity={1} position={[500, 500, 1000]} />
                 <OrbitControls makeDefault dampingFactor={0.8} />
                 <CameraRig cameraPosition={cameraPosition} />
+                {selectedPocket?.boundingBox && (
+                    <box3Helper
+                        args={[selectedPocket?.boundingBox, 0x6a5acd]}
+                    />
+                )}
                 <Model />
             </Canvas>
         </WorkingLayout>

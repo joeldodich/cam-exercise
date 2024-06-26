@@ -13,6 +13,7 @@ import {
 import * as React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import * as THREE from "three";
+import { BufferGeometryUtils } from "three/examples/jsm/Addons.js";
 import rawAdjacencyGraph from "./adjacency_graph.json";
 import rawEntityGeometryInfo from "./entity_geometry_info.json";
 import { updatePocketGroupings } from "./helpers";
@@ -93,12 +94,13 @@ type AnalysisContextType = {
     ) => void;
     geometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> | null;
     pocketGroups: PocketGroup[] | null;
+    selectedPocketId: PocketGroup['id'] | null;
+    setSelectedPocketId: (id: PocketGroup['id'] | null) => void;
     cameraPosition?: THREE.Vector3;
     setCameraPosition: (position: THREE.Vector3) => void;
     hoveredEntityIds: Set<EntityGeometryInfo["entityId"]>;
     onHoverEntityStart: (entityId: EntityGeometryInfo["entityId"]) => void;
     onHoverEntityEnd: (entityId: EntityGeometryInfo["entityId"]) => void;
-    hoveredPocketIds: Set<PocketGroup["id"]>;
 };
 
 const AnalysisContext = createContext<AnalysisContextType>({
@@ -108,19 +110,24 @@ const AnalysisContext = createContext<AnalysisContextType>({
     entityColorMap: new Map(),
     entityMap: null,
     setEntityMap: () => {},
-    geometryMap: null, // Abstract
-    pocketGroups: null, // Abstract
+    geometryMap: null,
+    pocketGroups: null,
+    selectedPocketId: null,
+    setSelectedPocketId: () => {},
     cameraPosition: new THREE.Vector3(0, 0, 300),
     setCameraPosition: () => {},
     hoveredEntityIds: new Set(),
     onHoverEntityStart: () => {},
     onHoverEntityEnd: () => {},
-    hoveredPocketIds: new Set(),
 });
 
 export const useAnalysis = () => useContext(AnalysisContext);
 
-export const AnalysisProvider = ({ children }: { children: React.ReactNode }) => {
+export const AnalysisProvider = ({
+    children,
+}: {
+    children: React.ReactNode;
+}) => {
     const [entityMap, setEntityMap] = useState<Map<
         EntityGeometryInfo["entityId"],
         ModelEntity
@@ -139,17 +146,30 @@ export const AnalysisProvider = ({ children }: { children: React.ReactNode }) =>
         Set<EntityGeometryInfo["entityId"]>
     >(new Set());
 
-    const hoveredPocketIds = new Set<PocketGroup["id"]>();
-    // for each pocket group, if any entity is hovered, add the pocket group id to the set
-    pocketGroupsResponse.forEach((pocketGroup) => {
-        pocketGroup.entityIds.forEach((entityId) => {
-            if (hoveredEntityIds.has(entityId)) {
-                hoveredPocketIds.add(pocketGroup.id);
+    const pocketGroups = pocketGroupsResponse;
+    // calculate the bounding box for each pocket group. Do this by creating a single mesh from all of the entities in the pocket group then calculating the bounding box of that mesh.
+    pocketGroups.forEach((pocket) => {
+        // debugger;
+        let pocketBufferGeometry: THREE.BufferGeometry[] = [];
+        pocket.entityIds.forEach((entityId) => {
+            const geometry = entityMap?.get(entityId)?.bufferGeometry;
+            if (geometry) {
+                pocketBufferGeometry.push(geometry);
             }
         });
-    });
 
-    const pocketGroups = pocketGroupsResponse;
+        if (pocketBufferGeometry.length === 0) return;
+        const mergedGeometry =
+            BufferGeometryUtils.mergeGeometries(pocketBufferGeometry);
+        const mergedMesh = new THREE.Mesh(mergedGeometry);
+        const boundingBox = new THREE.Box3().setFromObject(
+            new THREE.Mesh(mergedGeometry)
+        );
+        pocket.boundingBox = boundingBox;
+        pocket.mesh = mergedMesh;
+        pocketBufferGeometry = [];
+    });
+    const [selectedPocketId, setSelectedPocketId] = useState<PocketGroup['id'] | null>(null);
     const geometryMap = entityGeometryMapResponse;
 
     const onHoverEntityStart = (entityId: EntityGeometryInfo["entityId"]) => {
@@ -185,13 +205,14 @@ export const AnalysisProvider = ({ children }: { children: React.ReactNode }) =>
                 entityMap,
                 setEntityMap,
                 pocketGroups,
+                selectedPocketId,
+                setSelectedPocketId,
                 geometryMap,
                 cameraPosition,
                 setCameraPosition,
                 hoveredEntityIds,
                 onHoverEntityStart,
                 onHoverEntityEnd,
-                hoveredPocketIds,
             }}
         >
             {children}
