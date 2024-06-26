@@ -5,14 +5,9 @@ import { WorkingLayout } from "@/layouts/WorkingLayout";
 import { Colorization } from "@/types/global";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { styled } from "styled-components";
 import { Vector3 } from "three";
 import { Model } from "../../components/Model/Model";
 import { ToggleGroup, ToggleGroupItem } from "../../components/ui/toggle-group";
-
-const ListItem = styled.li<{ isHovered: boolean }>`
-    background-color: ${(props) => (props.isHovered ? "lightblue" : "none")};
-`;
 
 export const Viewer = () => {
     const {
@@ -21,7 +16,6 @@ export const Viewer = () => {
         setColorization,
         pocketGroups,
         cameraPosition,
-        hoveredPocketIds,
     } = useAnalysis();
 
     const ColorToggle = (
@@ -43,7 +37,6 @@ export const Viewer = () => {
     const PocketList = (
         <>
             {pocketGroups?.map((pocket) => {
-                const isHovered = hoveredPocketIds.has(pocket.id);
                 return (
                     <TitleCard
                         key={pocket.id}
