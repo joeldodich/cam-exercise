@@ -1,4 +1,4 @@
-import { Box3, BufferGeometry, Vector3 } from "three";
+import { Box3, BufferGeometry, Mesh, Vector3 } from "three";
 
 export type RgbString = string;
 export interface EntityGeometryInfo {
@@ -56,6 +56,7 @@ export type PocketGroup = {
     id: string;
     entityIds: Set<EntityGeometryInfo["entityId"]>;
     boundingBox?: Box3;
+    mesh?: Mesh;
 };
 
 export interface ModelEntity {
