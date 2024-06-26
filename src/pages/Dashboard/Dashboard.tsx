@@ -16,7 +16,7 @@ export const Dashboard = () => {
         </span>
     );
 
-    const { isLoading, isSuccess, isFetching } = useQuery({
+    const { isLoading } = useQuery({
         queryKey: ["parts"],
         queryFn: async () =>
             await new Promise((resolve) => setTimeout(resolve, 2000)),
