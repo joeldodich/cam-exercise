@@ -1,14 +1,14 @@
 import {
-	applyColorMapping,
-	updateColorMapping,
+    applyColorMapping,
+    updateColorMapping,
 } from "@/context/ViewerProvider/helpers";
 import {
-	Colorization,
-	EntityGeometryInfo,
-	EntityType,
-	ModelEntity,
-	PocketGroup,
-	RgbString,
+    Colorization,
+    EntityGeometryInfo,
+    EntityType,
+    ModelEntity,
+    PocketGroup,
+    RgbString,
 } from "@/types/global";
 import * as React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
