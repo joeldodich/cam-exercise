@@ -1,4 +1,4 @@
-import { useViewer } from "@/context/ViewerProvider/viewer-provider";
+import { useViewer } from "@/context/AnalysisProvider/viewer-provider";
 import { ModelEntity } from "@/types/global";
 import { useCubeTexture } from "@react-three/drei";
 import { useMemo } from "react";

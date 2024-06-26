@@ -1,7 +1,7 @@
 import {
     applyColorMapping,
     updateColorMapping,
-} from "@/context/ViewerProvider/helpers";
+} from "@/context/AnalysisProvider/helpers";
 import {
     Colorization,
     EntityGeometryInfo,
