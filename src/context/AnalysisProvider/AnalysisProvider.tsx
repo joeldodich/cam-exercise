@@ -95,7 +95,7 @@ type AnalysisContextType = {
     geometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> | null;
     pocketGroups: PocketGroup[] | null;
     selectedPocketId: PocketGroup["id"] | null;
-    setSelectedPocketId: (id: PocketGroup["id"] | null) => void;
+    setSelectedPocketId: React.Dispatch<React.SetStateAction<PocketGroup["id"] | null>>;
     cameraPosition?: THREE.Vector3;
     setCameraPosition: (position: THREE.Vector3) => void;
     hoveredEntityIds: Set<EntityGeometryInfo["entityId"]>;

@@ -1,13 +1,35 @@
 import { TitleCard } from "@/components/common/TitleCard/TitleCard";
 import { Toolbar } from "@/components/Toolbar/Toolbar";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useAnalysis } from "@/context/AnalysisProvider/AnalysisProvider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
 import { Colorization, PocketGroup } from "@/types/global";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import { EyeOff } from "lucide-react";
+import styled from "styled-components";
 import { Vector3 } from "three";
 import { Model } from "../../components/Model/Model";
-import { ToggleGroup, ToggleGroupItem } from "../../components/ui/toggle-group";
+
+const StyledPanelHeader = styled.div`
+    background: var(
+        --ScrollFade,
+        linear-gradient(
+            180deg,
+            #f8fafc 0%,
+            rgba(248, 250, 252, 0.95) 80%,
+            rgba(248, 250, 252, 0.05) 100%
+        )
+    );
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    text-align: center;
+`;
 
 export const Viewer = () => {
     const {
@@ -21,68 +43,69 @@ export const Viewer = () => {
     } = useAnalysis();
 
     const toggleSelectedPocket = (selection: PocketGroup["id"] | null) => {
-        setSelectedPocketId(selection);
+        // setSelectedPocketId(((id: PocketGroup["id"] | null) => (prev === selection ? null : selection)));
+        setSelectedPocketId((prev: string | null) =>
+            prev === selection ? null : selection
+        );
     };
 
     const selectedPocket = pocketGroups?.find(
         (pocket) => pocket.id === selectedPocketId
     );
 
-    const ColorToggle = (
-        <ToggleGroup
-            type="single"
-            value={colorization}
-            onValueChange={(data: Colorization) => setColorization(data)}
-        >
-            <ToggleGroupItem value={Colorization.NONE}>None</ToggleGroupItem>
-            <ToggleGroupItem value={Colorization.ENTITY}>
-                Entity
-            </ToggleGroupItem>
-            <ToggleGroupItem value={Colorization.POCKET}>
-                Pocket
-            </ToggleGroupItem>
-        </ToggleGroup>
+    //create an element called HideIconWithTooltip that will be shown if the TitleCard is active
+    const HideIconWithTooltip = (
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <EyeOff size={16} className="slate-500" />
+            </TooltipTrigger>
+            <TooltipContent>
+                <p>Deselect & Hide Bounding Box</p>
+            </TooltipContent>
+        </Tooltip>
     );
 
     const PocketList = (
-        <>
-            {pocketGroups?.map((pocket) => {
-                return (
-                    <TitleCard
-                        key={pocket.id}
-                        title={`Group ${pocket.id}`}
-                        imageUrl="https://via.placeholder.com/150"
-                        descriptionSlot={
-                            <span className="text-xs">
-                                {pocket.boundingBox &&
-                                    `X: ${pocket.boundingBox.min.x.toFixed(
-                                        2
-                                    )} Y: ${pocket.boundingBox.min.y.toFixed(
-                                        2
-                                    )} Z: ${pocket.boundingBox.min.z.toFixed(
-                                        2
-                                    )}`}
-                            </span>
-                        }
-                        // isHovered={isHovered}
-                        // onClick={() => handlePocketClick(pocket.id)}
-                        onClick={() => toggleSelectedPocket(pocket.id)}
-                    />
-                );
-            })}
-        </>
+        <div className="h-full relative">
+            <StyledPanelHeader className="sticky pb-4 mt-3 top-0">
+                <h3 className="text-lg">Pockets</h3>
+                <sub className="text-xs text-slate-500">
+                    Select a pocket to view details
+                </sub>
+            </StyledPanelHeader>
+            <div className="flex flex-col gap-2 pb-4">
+                {pocketGroups?.map((pocket) => {
+                    return (
+                        <TitleCard
+                            key={pocket.id}
+                            title={`Group ${pocket.id}`}
+                            imageUrl="https://via.placeholder.com/150"
+                            descriptionSlot={
+                                <span className="text-xs">
+                                    {pocket.boundingBox &&
+                                        `X: ${pocket.boundingBox.min.x.toFixed(
+                                            2
+                                        )} Y: ${pocket.boundingBox.min.y.toFixed(
+                                            2
+                                        )} Z: ${pocket.boundingBox.min.z.toFixed(
+                                            2
+                                        )}`}
+                                </span>
+                            }
+                            active={pocket.id === selectedPocketId}
+                            actionSlot={
+                                pocket.id === selectedPocketId &&
+                                HideIconWithTooltip
+                            }
+                            // isHovered={isHovered}
+                            // onClick={() => handlePocketClick(pocket.id)}
+                            onClick={() => toggleSelectedPocket(pocket.id)}
+                        />
+                    );
+                })}
+            </div>
+        </div>
     );
-
-    // const TopBar = (
-    //     <TopNav>
-    //         <Toolbar
-    //             handleSelectColorization={(data: Colorization) =>
-    //                 setColorization(data)
-    //             }
-    //             colorization={colorization}
-    //         />
-    //     </TopNav>
-    // );
 
     return (
         <WorkingLayout panelSlot={PocketList}>

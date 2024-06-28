@@ -13,7 +13,6 @@ const RightPanel = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
     overflow-y: auto;
     overflow-x: hidden;
 `;
