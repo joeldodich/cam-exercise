@@ -6,7 +6,7 @@ Joel Dodich, Jun 2024
 
 Sample app to evaluate a demo part.
 
-Built with **React + Vite + Typescript**. Styling provided by **Tailwind CSS** and shadcn/ui
+Built with **React + Vite + Typescript**. Styling provided by **Tailwind CSS**, **styled-components**, and **shadcn/ui**
 
 To get started. install dependencies: `npm i`
 
@@ -47,4 +47,8 @@ Leveraging Figma as a developer helps plan and identify architecture issues befo
 
 ![Section 3](https://github.com/joeldodich/hadrian-exercise/assets/88948803/fa93c1e6-21b7-4a45-a210-5437dfa87dce)
 
+###### Known Bugs
 
+- Faces can be picked through other faces. I did not write any hit testing logic.
+- Faces hover while spinning. This is more annoying than anything else.
+- Minimal responsiveness. I decided to omit making things responsive in favor of dev speed.
