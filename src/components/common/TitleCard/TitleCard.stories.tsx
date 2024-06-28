@@ -20,6 +20,7 @@ export const Default: Story = {
                 <PersonAvatar className="h-4 w-4" /> Created 6/24/24 at 10:24AM
             </span>
         ),
+        active: false,
         onClick: fn(),
     },
 };

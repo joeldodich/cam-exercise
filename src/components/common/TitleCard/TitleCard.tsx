@@ -6,22 +6,29 @@ import { Card, CardContent } from "../../ui/card";
 interface TitleCardProps {
     title: string;
     imageUrl: string;
+    active?: boolean;
     onClick?: () => void;
     size?: "sm" | "lg";
     descriptionSlot?: React.ReactNode;
     actionSlot?: React.ReactNode;
 }
 
-const StyledCard = styled(Card)`
+const StyledCard = styled(Card)<{ active?: boolean }>`
     flex: 1;
     max-width: 24rem;
     min-width: 19rem;
     cursor: pointer;
     &:hover {
-        box-shadow: 0px 0.25rem 0.25rem 0px rgba(174, 174, 174, 0.25);
-        background: var(--blue-200, #bfdbfe);
-        border: 1px solid var(--blue-700, #1d4ed8);
+        background: ${(props) =>
+            props.active
+                ? "rgba(147, 197, 253, 0.50)"
+                : "rgba(203, 213, 225, 0.5)"};
+        box-shadow: 0px 4px 4px 0px rgba(174, 174, 174, 0.25);
     }
+    background: ${(props) => (props.active ? "rgba(147, 197, 253, 0.50)" : "")};
+    border: ${(props) =>
+        props.active ? "1px solid var(--blue-500, #3B82F6)" : ""};
+    transition: all 0.08s ease-in-out;
 `;
 
 const ImageContainer = styled.div<{ imageUrl: string; size: "sm" | "lg" }>`
@@ -37,6 +44,7 @@ const ImageContainer = styled.div<{ imageUrl: string; size: "sm" | "lg" }>`
 export const TitleCard = ({
     title,
     imageUrl,
+    active = false,
     size = "sm",
     descriptionSlot,
     actionSlot,
@@ -46,7 +54,7 @@ export const TitleCard = ({
     const titleClasses = twMerge(titleFont, "truncate", "text-left");
 
     return (
-        <StyledCard onClick={onClick}>
+        <StyledCard onClick={onClick} active={active}>
             <CardContent className="flex flex-1 flex-row gap-2 h-full w-full items-center p-3">
                 <ImageContainer
                     imageUrl={imageUrl}
