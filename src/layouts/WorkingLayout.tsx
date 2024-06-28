@@ -28,12 +28,10 @@ export const WorkingLayout = ({
                 <div>{headerSlot}</div>
                 <div className="mx-3 mb-3 bg-white rounded-lg border-2 border-slate-300 flex-grow overflow-clip relative">
                     {children}
-                    {/* <Toolbar /> */}
                 </div>
             </div>
             <RightPanel className="pr-3 overflow-hidden">
                 {panelSlot}
-                {/* <ScrollFadeFooter /> */}
             </RightPanel>
         </div>
     );
