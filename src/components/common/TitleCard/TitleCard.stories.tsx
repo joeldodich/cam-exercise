@@ -12,7 +12,7 @@ type Story = StoryObj<typeof TitleCard>;
 
 export const Default: Story = {
     args: {
-        title: "Part Nameddddddddddlakdhjsfj;kashdfklj",
+        title: "Part Name",
         imageUrl: "https://via.placeholder.com/150",
         size: "sm",
         descriptionSlot: (
