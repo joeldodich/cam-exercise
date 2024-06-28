@@ -13,8 +13,6 @@ import { Link, useMatch, useParams } from "react-router-dom";
 export const NavBreadcrumbs = () => {
     const params = useParams();
     const onSinglePartPage = useMatch("/:partId");
-
-    console.log(onSinglePartPage);
     return (
         <Breadcrumb>
             <BreadcrumbList>
