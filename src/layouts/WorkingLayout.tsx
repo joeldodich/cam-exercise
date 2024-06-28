@@ -1,3 +1,4 @@
+import { TopNav } from "@/components/TopNav/TopNav";
 import styled from "styled-components";
 
 interface WorkingLayoutProps {
@@ -25,7 +26,7 @@ export const WorkingLayout = ({
     return (
         <div className="h-full w-full min-w-full flex flex-row bg-slate-50 relative">
             <div className="h-full flex flex-col flex-auto relative">
-                <div>{headerSlot}</div>
+                <TopNav />
                 <div className="mx-3 mb-3 bg-white rounded-lg border-2 border-slate-300 flex-grow overflow-clip relative">
                     {children}
                 </div>

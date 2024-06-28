@@ -9,6 +9,7 @@ import {
     MenubarTrigger,
 } from "@/components/ui/menubar";
 import { Colorization } from "@/types/global";
+import styled from "styled-components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface ToolbarProps {
@@ -16,32 +17,19 @@ interface ToolbarProps {
     handleSelectColorization: (option: Colorization) => void;
 }
 
+const FloatingMenubar = styled(Menubar)`
+    position: absolute;
+    bottom: 1rem;
+    left: 0;
+    transform: translateX(200%);
+`;
+
 export const Toolbar = ({
     colorization,
     handleSelectColorization,
 }: ToolbarProps) => {
     return (
-        <Menubar className="absolute bottom-0 left-0 translate-x-1/2">
-            <MenubarMenu>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <MenubarTrigger>Shortcuts</MenubarTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>Coming soon!</p>
-                    </TooltipContent>
-                </Tooltip>
-            </MenubarMenu>
-            <MenubarMenu>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <MenubarTrigger>Units</MenubarTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>Coming soon!</p>
-                    </TooltipContent>
-                </Tooltip>
-            </MenubarMenu>
+        <FloatingMenubar>
             <MenubarMenu>
                 <MenubarTrigger>Display</MenubarTrigger>
                 <MenubarContent>
@@ -80,6 +68,30 @@ export const Toolbar = ({
                     </MenubarSub>
                 </MenubarContent>
             </MenubarMenu>
-        </Menubar>
+            <MenubarMenu>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <MenubarTrigger className="text-secondary">
+                            Shortcuts
+                        </MenubarTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Coming soon!</p>
+                    </TooltipContent>
+                </Tooltip>
+            </MenubarMenu>
+            <MenubarMenu>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <MenubarTrigger className="text-secondary">
+                            Units
+                        </MenubarTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Coming soon!</p>
+                    </TooltipContent>
+                </Tooltip>
+            </MenubarMenu>
+        </FloatingMenubar>
     );
 };

@@ -1,6 +1,5 @@
 import { TitleCard } from "@/components/common/TitleCard/TitleCard";
 import { Toolbar } from "@/components/Toolbar/Toolbar";
-import { TopNav } from "@/components/TopNav/TopNav";
 import { useAnalysis } from "@/context/AnalysisProvider/AnalysisProvider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
 import { Colorization, PocketGroup } from "@/types/global";
@@ -74,19 +73,19 @@ export const Viewer = () => {
         </>
     );
 
-    const TopBar = (
-        <TopNav>
-            <Toolbar
-                handleSelectColorization={(data: Colorization) =>
-                    setColorization(data)
-                }
-                colorization={colorization}
-            />
-        </TopNav>
-    );
+    // const TopBar = (
+    //     <TopNav>
+    //         <Toolbar
+    //             handleSelectColorization={(data: Colorization) =>
+    //                 setColorization(data)
+    //             }
+    //             colorization={colorization}
+    //         />
+    //     </TopNav>
+    // );
 
     return (
-        <WorkingLayout headerSlot={TopBar} panelSlot={PocketList}>
+        <WorkingLayout panelSlot={PocketList}>
             {!entityMap && <div>Loading...</div>}
             <Canvas>
                 <ambientLight />
@@ -100,6 +99,12 @@ export const Viewer = () => {
                 )}
                 <Model />
             </Canvas>
+            <Toolbar
+                handleSelectColorization={(data: Colorization) =>
+                    setColorization(data)
+                }
+                colorization={colorization}
+            />
         </WorkingLayout>
     );
 };

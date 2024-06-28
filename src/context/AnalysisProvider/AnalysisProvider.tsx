@@ -94,8 +94,8 @@ type AnalysisContextType = {
     ) => void;
     geometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> | null;
     pocketGroups: PocketGroup[] | null;
-    selectedPocketId: PocketGroup['id'] | null;
-    setSelectedPocketId: (id: PocketGroup['id'] | null) => void;
+    selectedPocketId: PocketGroup["id"] | null;
+    setSelectedPocketId: (id: PocketGroup["id"] | null) => void;
     cameraPosition?: THREE.Vector3;
     setCameraPosition: (position: THREE.Vector3) => void;
     hoveredEntityIds: Set<EntityGeometryInfo["entityId"]>;
@@ -133,7 +133,7 @@ export const AnalysisProvider = ({
         ModelEntity
     > | null>(null);
     const [colorization, setColorization] = useState<Colorization>(
-        Colorization.NONE
+        Colorization.ENTITY
     );
     const [entityColorMap, setEntityColorMap] =
         useState<Map<EntityGeometryInfo["entityId"], RgbString>>(
@@ -169,7 +169,9 @@ export const AnalysisProvider = ({
         pocket.mesh = mergedMesh;
         pocketBufferGeometry = [];
     });
-    const [selectedPocketId, setSelectedPocketId] = useState<PocketGroup['id'] | null>(null);
+    const [selectedPocketId, setSelectedPocketId] = useState<
+        PocketGroup["id"] | null
+    >(null);
     const geometryMap = entityGeometryMapResponse;
 
     const onHoverEntityStart = (entityId: EntityGeometryInfo["entityId"]) => {
