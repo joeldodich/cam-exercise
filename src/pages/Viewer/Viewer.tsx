@@ -43,7 +43,6 @@ export const Viewer = () => {
     } = useAnalysis();
 
     const toggleSelectedPocket = (selection: PocketGroup["id"] | null) => {
-        // setSelectedPocketId(((id: PocketGroup["id"] | null) => (prev === selection ? null : selection)));
         setSelectedPocketId((prev: string | null) =>
             prev === selection ? null : selection
         );
@@ -53,7 +52,6 @@ export const Viewer = () => {
         (pocket) => pocket.id === selectedPocketId
     );
 
-    //create an element called HideIconWithTooltip that will be shown if the TitleCard is active
     const HideIconWithTooltip = (
         <Tooltip>
             <TooltipTrigger asChild>

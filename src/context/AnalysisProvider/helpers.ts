@@ -102,13 +102,11 @@ export const updateColorMapping = (
         });
     }
 
-    // Override color for hovered entities
     hoveredSet.forEach((hoveredEntityId) => {
         if (colorMap.has(hoveredEntityId)) {
             updatedColorMap.set(hoveredEntityId, "rgb(0, 0, 255)");
         }
         if (colorization === Colorization.POCKET) {
-            console.log("Pocket re-colorization");
             pocketGroupings.forEach((pocket) => {
                 if (pocket.entityIds.has(hoveredEntityId)) {
                     pocket.entityIds.forEach((entityId) => {

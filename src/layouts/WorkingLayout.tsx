@@ -3,7 +3,6 @@ import styled from "styled-components";
 
 interface WorkingLayoutProps {
     children: React.ReactNode;
-    headerSlot?: React.ReactNode;
     panelSlot?: React.ReactNode;
 }
 
@@ -17,11 +16,7 @@ const RightPanel = styled.div`
     overflow-x: hidden;
 `;
 
-export const WorkingLayout = ({
-    children,
-    headerSlot,
-    panelSlot,
-}: WorkingLayoutProps) => {
+export const WorkingLayout = ({ children, panelSlot }: WorkingLayoutProps) => {
     return (
         <div className="h-full w-full min-w-full flex flex-row bg-slate-50 relative">
             <div className="h-full flex flex-col flex-auto relative">
