@@ -95,8 +95,6 @@ export const Viewer = () => {
                                 pocket.id === selectedPocketId &&
                                 HideIconWithTooltip
                             }
-                            // isHovered={isHovered}
-                            // onClick={() => handlePocketClick(pocket.id)}
                             onClick={() => toggleSelectedPocket(pocket.id)}
                         />
                     );

@@ -80,7 +80,6 @@ Object.keys(rawColorToEntityIdMap).forEach((colorString, index) => {
     const entityId =
         rawColorToEntityIdMap[Object.keys(rawColorToEntityIdMap)[index]];
     idToColorMapResponse.set(entityId, `rgb(${r}, ${g}, ${b})`);
-    // debugger;
 });
 
 type AnalysisContextType = {
@@ -95,7 +94,9 @@ type AnalysisContextType = {
     geometryMap: Map<EntityGeometryInfo["entityId"], EntityGeometryInfo> | null;
     pocketGroups: PocketGroup[] | null;
     selectedPocketId: PocketGroup["id"] | null;
-    setSelectedPocketId: React.Dispatch<React.SetStateAction<PocketGroup["id"] | null>>;
+    setSelectedPocketId: React.Dispatch<
+        React.SetStateAction<PocketGroup["id"] | null>
+    >;
     cameraPosition?: THREE.Vector3;
     setCameraPosition: (position: THREE.Vector3) => void;
     hoveredEntityIds: Set<EntityGeometryInfo["entityId"]>;
@@ -147,9 +148,7 @@ export const AnalysisProvider = ({
     >(new Set());
 
     const pocketGroups = pocketGroupsResponse;
-    // calculate the bounding box for each pocket group. Do this by creating a single mesh from all of the entities in the pocket group then calculating the bounding box of that mesh.
     pocketGroups.forEach((pocket) => {
-        // debugger;
         let pocketBufferGeometry: THREE.BufferGeometry[] = [];
         pocket.entityIds.forEach((entityId) => {
             const geometry = entityMap?.get(entityId)?.bufferGeometry;
