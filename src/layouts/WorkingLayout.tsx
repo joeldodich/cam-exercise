@@ -23,11 +23,12 @@ export const WorkingLayout = ({
     panelSlot,
 }: WorkingLayoutProps) => {
     return (
-        <div className="h-full w-full min-w-full flex flex-row bg-slate-50">
-            <div className="h-full flex flex-col flex-auto">
+        <div className="h-full w-full min-w-full flex flex-row bg-slate-50 relative">
+            <div className="h-full flex flex-col flex-auto relative">
                 <div>{headerSlot}</div>
-                <div className="mx-3 mb-3 bg-white rounded-lg border-2 border-slate-300 flex-grow overflow-clip">
+                <div className="mx-3 mb-3 bg-white rounded-lg border-2 border-slate-300 flex-grow overflow-clip relative">
                     {children}
+                    {/* <Toolbar /> */}
                 </div>
             </div>
             <RightPanel className="pr-3 overflow-hidden">

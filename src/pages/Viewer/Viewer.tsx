@@ -1,4 +1,5 @@
 import { TitleCard } from "@/components/common/TitleCard/TitleCard";
+import { Toolbar } from "@/components/Toolbar/Toolbar";
 import { TopNav } from "@/components/TopNav/TopNav";
 import { useAnalysis } from "@/context/AnalysisProvider/AnalysisProvider";
 import { WorkingLayout } from "@/layouts/WorkingLayout";
@@ -73,7 +74,16 @@ export const Viewer = () => {
         </>
     );
 
-    const TopBar = <TopNav>{ColorToggle}</TopNav>;
+    const TopBar = (
+        <TopNav>
+            <Toolbar
+                handleSelectColorization={(data: Colorization) =>
+                    setColorization(data)
+                }
+                colorization={colorization}
+            />
+        </TopNav>
+    );
 
     return (
         <WorkingLayout headerSlot={TopBar} panelSlot={PocketList}>
