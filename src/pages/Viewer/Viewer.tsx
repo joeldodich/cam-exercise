@@ -1,4 +1,5 @@
 import { TitleCard } from "@/components/common/TitleCard/TitleCard";
+import { Model } from "@/components/model/model";
 import { Toolbar } from "@/components/Toolbar/Toolbar";
 import {
     Tooltip,
@@ -13,7 +14,6 @@ import { Canvas } from "@react-three/fiber";
 import { EyeOff } from "lucide-react";
 import styled from "styled-components";
 import { Vector3 } from "three";
-import { Model } from "../../components/Model/Model";
 
 const StyledPanelHeader = styled.div`
     background: var(
