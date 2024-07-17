@@ -1,4 +1,4 @@
-# Hadrian Frontend Exercise
+# 3D Visualization Example
 
 Joel Dodich, Jun 2024
 
